@@ -3,7 +3,7 @@
 var camera;
 var renderer;
 
-var numScenes = 1; // number of scenes
+var numScenes = 2; // number of scenes
 var scenes = []; // list of all scenes
 var curScene; // currently selected scene in the demo
 var curSceneNum = 0;
@@ -29,8 +29,8 @@ var changeScene = function(num) {
 
     // init next scene
     curScene = scenes[num];
-    console.log(curScene);
     curScene.init();
+    curSceneNum = num;
 };
 
 var render = function() {
