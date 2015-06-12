@@ -9,6 +9,11 @@ var curScene; // currently selected scene in the demo
 var curSceneNum = 0;
 var curThreeScene = null;
 var init = function() {
+    $(document).keypress(function(event) {
+        if (event.which >= 49 || event.which <= 51) {
+            changeScene(event.which - 49);
+        }
+    })
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
     renderer = new THREE.WebGLRenderer();
