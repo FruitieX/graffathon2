@@ -1,19 +1,35 @@
 function Scene2() {
-    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    this.cube = new THREE.Mesh( geometry, material );
+    this.numParticles = 7;
+    this.dx = [];
+    for (var i = 0; i < 7; i++) {
+        this.dx.push(new THREE.Vector3(0,0,0));
+    }
 };
 
 Scene2.prototype.init = function() {
     curThreeScene = new THREE.Scene();
     camera.position.z = 7;
-    curThreeScene.add(this.cube);
+
+    var particleGeometry = new THREE.Geometry();
+    for (var i = 0; i < this.numParticles; i++) {
+        particleGeometry.vertices.push(new THREE.Vector3(0, i, 0));
+    }
+    var particleMaterial = new THREE.PointCloudMaterial({
+        size: 1
+    });
+    this.particles = new THREE.PointCloud(particleGeometry, particleMaterial);
+
+    curThreeScene.add(this.particles);
 };
 
 Scene2.prototype.deinit = function() {
 };
 
 Scene2.prototype.update = function(dt) {
-    this.cube.rotation.x += 0.1;
-    this.cube.rotation.y += 0.1;
+    //this.particles.rotateOnAxis(new THREE.Vector3(1, 1, 0), 0.01);
+    for (var i = 0; i < this.numParticles; i++) {
+        this.particles.geometry.vertices[i].add(this.dx[i]);
+        this.dx[i] = this.particles.geometry.vertices[i].multiplyScalar(-0.0000001);
+    }
+
 };
