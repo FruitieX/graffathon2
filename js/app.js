@@ -15,10 +15,13 @@ var init = function() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
+    /*
     for (var i = 0; i < numScenes; i++) {
         scenes.push(new scene0());
     }
-    changeScene(0);
+    */
+    scenes.push(new scenezero());
+    changeScene(0); // start with scene 0
 };
 
 var changeScene = function(num) {
@@ -29,6 +32,7 @@ var changeScene = function(num) {
 
     // init next scene
     curScene = scenes[num];
+    console.log(curScene);
     curScene.init();
 };
 
