@@ -38,6 +38,7 @@ var init = function() {
     changeScene(0); // start with scene 0
     audio = $('#audio');
     audio.trigger('play');
+    audio.get(0).muted = true;
 };
 
 var changeScene = function(num) {
