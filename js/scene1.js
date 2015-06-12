@@ -2,6 +2,7 @@ function Scene1() {
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
     var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
     this.cube = new THREE.Mesh( geometry, material );
+    this._sceneTime = 10000; // scene active time in ms
 };
 
 Scene1.prototype.init = function() {

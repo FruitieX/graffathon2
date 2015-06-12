@@ -3,11 +3,15 @@
 var camera;
 var renderer;
 
+var audio;
+
 var numScenes = 2; // number of scenes
 var scenes = []; // list of all scenes
-var curScene; // currently selected scene in the demo
-var curSceneNum = 0;
+var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
+var curScene = 0;
 var curThreeScene = null;
+var curTime = 0;
+
 var init = function() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
@@ -27,24 +31,48 @@ var init = function() {
         scenes.push(new window['Scene' + i]());
     }
     changeScene(0); // start with scene 0
+    audio = $('#audio');
+    audio.trigger('play');
 };
 
 var changeScene = function(num) {
     // deinit old scene
-    if (curScene) {
-        curScene.deinit();
+    if (scenes[curScene]) {
+        scenes[curScene].deinit();
+        scenesElapsedTime += scenes[curScene]._sceneTime;
     }
 
     // init next scene
-    curScene = scenes[num];
-    curScene.init();
-    curSceneNum = num;
+    curScene = num;
+    scenes[curScene].init();
+    scenes[curScene]._startTime = curTime;
+    console.log('scene changed to ' + num);
 };
 
+var shouldChangeScene = function() {
+    // are we at the last scene?
+    if (curScene === numScenes - 1) {
+        return false
+    }
+
+    // has enough time passed?
+    if (curTime > scenesElapsedTime + scenes[curScene]._sceneTime) {
+        return true;
+    }
+
+    return false;
+};
+
+var prevFrame = new Date();
 var render = function() {
     requestAnimationFrame(render);
+    curTime = audio.get(0).currentTime * 1000;
 
-    curScene.update();
+    if (shouldChangeScene()) {
+        changeScene(curScene + 1);
+    }
+
+    scenes[curScene].update(curTime - prevFrame);
 
     renderer.render(curThreeScene, camera);
 };
