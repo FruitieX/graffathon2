@@ -1,12 +1,12 @@
-var static = require('node-static');
-var fileServer = new static.Server('./public');
+var express = require('express');
 
 var port = process.env.PORT || 8080;
 
-require('http').createServer(function (request, response) {
-    request.addListener('end', function () {
-        fileServer.serve(request, response);
-    }).resume();
-}).listen(port);
+var express = require('express');
+var app = express();
+
+app.use('/bower_components', express.static(__dirname + '/bower_components'));
+app.use(express.static(__dirname + '/public'));
+app.listen(port);
 
 console.log('listening on port ' + port);
