@@ -14,8 +14,8 @@ var curTime = 0;
 
 var init = function() {
     $(document).keypress(function(event) {
-        if (event.which >= 49 && event.which <= 51) {
-            changeScene(event.which - 49);
+        if (event.which >= 48 && event.which <= 57) {
+            changeScene(event.which - 48);
         }
     })
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -42,6 +42,11 @@ var init = function() {
 };
 
 var changeScene = function(num) {
+    // check that scene exists
+    if (num > numScenes - 1) {
+        return;
+    }
+
     // deinit old scene
     if (scenes[curScene]) {
         scenes[curScene].deinit();
