@@ -1,5 +1,6 @@
-# graffathon2
+# graffathondemo_grepme
 demo for graffathon
+name will change eventually :)
 
 ## install dependencies
 ```
