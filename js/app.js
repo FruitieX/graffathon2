@@ -15,12 +15,9 @@ var init = function() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
-    /*
     for (var i = 0; i < numScenes; i++) {
-        scenes.push(new scene0());
+        scenes.push(new window['Scene' + i]());
     }
-    */
-    scenes.push(new scenezero());
     changeScene(0); // start with scene 0
 };
 
