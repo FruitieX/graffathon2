@@ -15,6 +15,7 @@
   ],
   "dependencies": {
     "threejs": "*",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "underscore": "~1.8.3"
   }
 }
