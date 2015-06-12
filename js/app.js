@@ -3,7 +3,7 @@
 var camera;
 var renderer;
 
-var numScenes = 2; // number of scenes
+var numScenes = 3; // number of scenes
 var scenes = []; // list of all scenes
 var curScene; // currently selected scene in the demo
 var curSceneNum = 0;
