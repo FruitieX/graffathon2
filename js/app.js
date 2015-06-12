@@ -8,7 +8,7 @@ var audio;
 var numScenes = 3; // number of scenes
 var scenes = []; // list of all scenes
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
-var curScene = 0;
+var curScene = -1;
 var curThreeScene = null;
 var curTime = 0;
 
