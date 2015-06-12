@@ -10,7 +10,7 @@ var curSceneNum = 0;
 var curThreeScene = null;
 var init = function() {
     $(document).keypress(function(event) {
-        if (event.which >= 49 || event.which <= 51) {
+        if (event.which >= 49 && event.which <= 51) {
             changeScene(event.which - 49);
         }
     })
