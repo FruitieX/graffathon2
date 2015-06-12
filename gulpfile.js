@@ -1,7 +1,10 @@
 var gulp = require('gulp');
-var mainBowerFiles = require('main-bower-files');
+var inject = require('gulp-inject');
+var bowerFiles = require('main-bower-files');
 
 gulp.task('default', function() {
-    return gulp.src(mainBowerFiles())
-        .pipe()
+    gulp.src('./public_src/index.html')
+        .pipe(inject(gulp.src(bowerFiles(), {read: false}, {name: 'bower'})))
+        .pipe(inject(gulp.src('./public/js/*.js', {read: false})))
+        .pipe(gulp.dest('./public'))
 });
