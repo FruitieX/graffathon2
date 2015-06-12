@@ -4,6 +4,8 @@ function Scene2() {
     for (var i = 0; i < 7; i++) {
         this.dx.push(new THREE.Vector3(0,0,0));
     }
+
+    this._sceneTime = 5000; // scene active time in ms
 };
 
 Scene2.prototype.init = function() {
