@@ -31,7 +31,8 @@ Scene2.prototype.update = function(dt) {
     //this.particles.rotateOnAxis(new THREE.Vector3(1, 1, 0), 0.01);
     for (var i = 0; i < this.numParticles; i++) {
         this.particles.geometry.vertices[i].add(this.dx[i]);
-        this.dx[i] = this.particles.geometry.vertices[i].multiplyScalar(-0.0000001);
+        this.particles.geometry.verticesNeedUpdate = true;
+        this.dx[i] = this.particles.geometry.vertices[i].multiplyScalar(-1);
     }
 
 };
