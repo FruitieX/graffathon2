@@ -30,10 +30,6 @@ body {
 
     b { color: lightgreen }
 
-    #stats { position: absolute; top:0; left: 0 }
-    #stats #fps { background: transparent !important }
-    #stats #fps #fpsText { color: #777 !important }
-    #stats #fps #fpsGraph { display: none }
         </style>
     </head>
     <body>
@@ -41,15 +37,14 @@ body {
             <b>O</b> orthographic <b>P</b> perspective
         </div>
 
-        <script src="components/three.min.js"></script>
-        <script src="js/libs/stats.min.js"></script>
+        <script src="bower_components/threejs/build/three.min.js"></script>
 
         <script>
 
 var SCREEN_WIDTH = window.innerWidth;
 var SCREEN_HEIGHT = window.innerHeight;
 
-var container, stats;
+var container;
 var camera, scene, renderer, mesh;
 var cameraRig, activeCamera, activeHelper;
 var cameraPerspective, cameraOrtho;
@@ -144,8 +139,6 @@ function init() {
 
     //
 
-    stats = new Stats();
-    container.appendChild( stats.domElement );
 
     //
 
@@ -208,7 +201,6 @@ function animate() {
     requestAnimationFrame( animate );
 
     render();
-    stats.update();
 
 }
 
