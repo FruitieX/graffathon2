@@ -3,6 +3,7 @@ function Scene1() {
     var material = new THREE.MeshPhongMaterial( { color: 0xffffdd, specular: 0x009900, emissive: 0x006063, shininess: 50} );
     this.obj = new THREE.Mesh( geometry, material );
     speed = 0.01;
+    this._sceneTime = 10000; // scene active time in ms
 };
 
 Scene1.prototype.init = function() {
