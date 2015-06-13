@@ -7,6 +7,7 @@ var renderer;
 var composer;
 
 var debugMode = false;
+var bpm = 172;
 
 var audio;
 var audioCtx;
@@ -35,7 +36,7 @@ $(document).ready(function() {
 
 var initRenderer = function() {
     composer = null;
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.innerHTML = '';
     document.body.appendChild(renderer.domElement);
