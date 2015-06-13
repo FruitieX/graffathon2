@@ -68,8 +68,6 @@ Scene4.prototype.init = function() {
     vignette.uniforms['offset'].value = 1.0;
     vignette.renderToScreen = true;
     composer.addPass(vignette);
-
-    composer.render();
 };
 
 Scene4.prototype.deinit = function() {
