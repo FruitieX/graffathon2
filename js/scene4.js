@@ -49,11 +49,9 @@ Scene4.prototype.init = function() {
     effect.uniforms[ 'tSize' ].value = new THREE.Vector2( 32, 32 );
     composer.addPass( effect );
 
-    /*
     effect = new THREE.ShaderPass( THREE.KaleidoShader );
     effect.uniforms['sides'].value = 6;
     composer.addPass( effect );
-    */
 
     this.colorify = new THREE.ShaderPass( THREE.ColorifyShader );
     this.colorify.uniforms['color'].value = new THREE.Color(0.5, 0, 1);

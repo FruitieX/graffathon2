@@ -40,7 +40,7 @@ Scene3.prototype.init = function() {
     composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
 
     var vignette = new THREE.ShaderPass( THREE.VignetteShader );
-    vignette.uniforms['darkness'].value = 1.5;
+    vignette.uniforms['darkness'].value = 1.0;
     vignette.uniforms['offset'].value = 1.0;
     composer.addPass(vignette);
 
