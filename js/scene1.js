@@ -38,7 +38,7 @@ Scene1.prototype.init = function() {
     */
 
     // Add directional lightning
-    this.directionalLight = new THREE.DirectionalLight( 0x00ffff, 0.25 );
+    this.directionalLight = new THREE.DirectionalLight( 0x00dddd, 0.33 );
     this.directionalLight.castShadow = true;
     this.directionalLight.shadowMapWidth = 2048;
     this.directionalLight.shadowMapHeight = 2048;
@@ -46,7 +46,7 @@ Scene1.prototype.init = function() {
     curThreeScene.add(this.directionalLight);
 
     // Add point lightning
-    this.pointLight = new THREE.PointLight( 0xffffff, 1, 200 );
+    this.pointLight = new THREE.PointLight( 0xffffff, 1, 300 );
     this.pointLight.position.set( 0, -5, 0 );
     curThreeScene.add(this.pointLight);
 
