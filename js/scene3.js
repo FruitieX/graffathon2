@@ -50,8 +50,7 @@ Scene3.prototype.init = function() {
     composer.addPass( effect );
 
     effect = new THREE.ShaderPass( THREE.KaleidoShader );
-    //effect.uniforms[ 'scale' ].value = 32;
-    //effect.uniforms[ 'tSize' ].value = new THREE.Vector2( 32, 32 );
+    effect.uniforms['sides'].value = 6;
     composer.addPass( effect );
 
     this.colorify = new THREE.ShaderPass( THREE.ColorifyShader );
@@ -64,8 +63,8 @@ Scene3.prototype.init = function() {
     composer.addPass( this.rgbeffect );
 
     var vignetteFull = new THREE.ShaderPass( THREE.VignetteShader );
-    vignetteFull.uniforms['darkness'].value = 2.5;
-    vignetteFull.uniforms['offset'].value = 1.0;
+    vignetteFull.uniforms['darkness'].value = 3;
+    vignetteFull.uniforms['offset'].value = 1.1;
     composer.addPass(vignetteFull);
 
     this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
@@ -88,7 +87,6 @@ Scene3.prototype.update = function(dt, t) {
     this.hue = (this.hue + bass * 1) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
     var color_s = 'hsl(' + this.hue + '%, 100%, ' + this.lightness + '%)';
-    console.log(color_s);
     var color = tinycolor(color_s).toRgb();
     this.colorify.uniforms['color'].value = new THREE.Color(color.r / 255, color.g / 255, color.b / 255);
 
