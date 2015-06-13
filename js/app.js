@@ -12,7 +12,7 @@ var fftResult;
 var bass = 0;
 var _bass = 0;
 
-var numScenes = 3; // number of scenes
+var numScenes = 4; // number of scenes
 var scenes = []; // list of all scenes
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
 var curScene = -1;
@@ -124,7 +124,7 @@ var render = function() {
         changeScene(curScene + 1);
     }
 
-    scenes[curScene].update(curTime - prevFrame);
+    scenes[curScene].update(curTime - prevFrame, curTime);
     prevFrame= curTime;
 
     renderer.render(curThreeScene, camera);
