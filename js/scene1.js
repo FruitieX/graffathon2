@@ -96,9 +96,11 @@ Scene1.prototype.update = function(dt, t) {
     //curThreeScene.children[4].color = new THREE.Color(bass, bass, bass);
 
     // Increment camera angle [0,2PI]
-    this.cameraAngle += 0.01;
+    this.cameraAngle += 0.00025 * dt % Math.PI * 2;
+    /*
     if (this.cameraAngle > Math.PI * 2)
         this.cameraAngle = 0;
+    */
 
     // Camera spin around origin
     camera.position.x = Math.cos(this.cameraAngle) * this.cameraDistance;
@@ -116,8 +118,8 @@ Scene1.prototype.update = function(dt, t) {
     camera.position.y = 7 + Math.sin(t / 1000) * 1;
 
     // Rotate and scale object
-    this.obj.rotation.x += this.speed;
-    this.obj.rotation.y += this.speed * 8;
+    this.obj.rotation.x += this.speed * 0.1 * dt;
+    this.obj.rotation.y += this.speed * 8 * 0.1 * dt;
 
     this.obj.scale.x = 0.25 + Math.max(0, (bass * 1.25));
     this.obj.scale.y = this.obj.scale.x;
