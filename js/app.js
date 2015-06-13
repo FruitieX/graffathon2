@@ -74,7 +74,7 @@ var shouldChangeScene = function() {
     return false;
 };
 
-var prevFrame = new Date();
+var prevFrame = 0;
 var render = function() {
     requestAnimationFrame(render);
     curTime = audio.get(0).currentTime * 1000;
@@ -84,6 +84,7 @@ var render = function() {
     }
 
     scenes[curScene].update(curTime - prevFrame);
+    prevFrame= curTime;
 
     renderer.render(curThreeScene, camera);
 };
