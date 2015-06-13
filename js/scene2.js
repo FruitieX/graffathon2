@@ -1,8 +1,14 @@
 function Scene2() {
     var geometry = new THREE.IcosahedronGeometry(3, 0);
     var material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 1, shading: THREE.FlatShading} );
-    this.obj = new THREE.Mesh( geometry, material );
-    this.obj.castShadow = true;
+    this.obj1 = new THREE.Mesh( geometry, material );
+    this.obj1.castShadow = true;
+    this.obj2 = new THREE.Mesh( geometry, material );
+    this.obj2.position.z = -10;
+    this.obj2.castShadow = true;
+    this.obj3 = new THREE.Mesh( geometry, material );
+    this.obj3.position.z = 10;
+    this.obj3.castShadow = true;
     var geometry = new THREE.PlaneGeometry( 1000, 1000 );
     var material = new THREE.MeshPhongMaterial( {color: 0x555555, side: THREE.DoubleSide} );
     this.plane = new THREE.Mesh( geometry, material );
@@ -28,7 +34,9 @@ Scene2.prototype.init = function() {
     curThreeScene = new THREE.Scene();
     camera.position.z = 15;
     camera.position.y = 5;
-    curThreeScene.add(this.obj);
+    curThreeScene.add(this.obj1);
+    curThreeScene.add(this.obj2);
+    curThreeScene.add(this.obj3);
     curThreeScene.add(this.plane);
 
     // Add ambient lighting
@@ -38,7 +46,7 @@ Scene2.prototype.init = function() {
     */
 
     // Add directional lightning
-    this.directionalLight = new THREE.DirectionalLight( 0x00dddd, 0.33 );
+    this.directionalLight = new THREE.DirectionalLight( 0xdd00dd, 0.33 );
     this.directionalLight.castShadow = true;
     this.directionalLight.shadowMapWidth = 2048;
     this.directionalLight.shadowMapHeight = 2048;
@@ -79,7 +87,9 @@ Scene2.prototype.update = function(dt, t) {
     this.lightness = Math.max(50, (bass - 0.5) * 100);
 
     var cycle = barCycle / 2;
-    this.obj.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
+    this.obj1.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
+    this.obj2.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
+    this.obj3.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
 
     var lightness1 = Math.min(100, Math.max(0, Math.pow((2 * (t % cycle) - cycle) / 1000, 4) * 200));
 
@@ -118,10 +128,15 @@ Scene2.prototype.update = function(dt, t) {
     camera.position.y = 7 + Math.sin(t / 1000) * 1;
 
     // Rotate and scale object
-    this.obj.rotation.x += this.speed * 0.1 * dt;
-    this.obj.rotation.y += this.speed * 8 * 0.1 * dt;
+    this.obj1.rotation.x += this.speed * 0.1 * dt;
+    this.obj1.rotation.y += this.speed * 8 * 0.1 * dt;
+    this.obj1.scale.x = this.obj1.scale.y = this.obj1.scale.z = 0.25 + Math.max(0, (bass * 1.25));
 
-    this.obj.scale.x = 0.25 + Math.max(0, (bass * 1.25));
-    this.obj.scale.y = this.obj.scale.x;
-    this.obj.scale.z = this.obj.scale.x;
+    this.obj2.rotation.x += this.speed * 0.1 * dt;
+    this.obj2.rotation.y += this.speed * 8 * 0.1 * dt;
+    this.obj2.scale.x = this.obj2.scale.y = this.obj2.scale.z = 0.25 + Math.max(0, (bass * 1.25));
+
+    this.obj3.rotation.x += this.speed * 0.1 * dt;
+    this.obj3.rotation.y += this.speed * 8 * 0.1 * dt;
+    this.obj3.scale.x = this.obj3.scale.y = this.obj3.scale.z = 0.25 + Math.max(0, (bass * 1.25));
 };
