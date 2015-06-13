@@ -49,7 +49,7 @@ Scene2.prototype.update = function(dt, t) {
         this.d2x[i] = diff.multiplyScalar(this.gravityConstant * (1- Math.random() * 0.1));
         this.d2x[i].z += (Math.random() - 0.5) * 0.1 * this.gravityConstant;
     }
-    var time = audio.get(0).currentTime * 1000;
+    var time = audio.currentTime * 1000;
     this.gravityCenter.x = Math.sin(time * 0.1) * 10;
     this.gravityCenter.y = Math.cos(time * 0.1) * 10;
     var timeMod = time % 2000;

@@ -4,6 +4,10 @@ var camera;
 var renderer;
 
 var audio;
+var audioCtx;
+var analyser;
+var source;
+var fftResult;
 
 var numScenes = 3; // number of scenes
 var scenes = []; // list of all scenes
@@ -11,6 +15,13 @@ var scenesElapsedTime = 0; // added to after each scene change, time since start
 var curScene = -1;
 var curThreeScene = null;
 var curTime = 0;
+
+audio = new Audio();
+audio.src = '/music.mp3';
+
+$(document).ready(function() {
+    document.body.appendChild(audio);
+});
 
 var init = function() {
     $(document).keypress(function(event) {
@@ -35,10 +46,19 @@ var init = function() {
     for (var i = 0; i < numScenes; i++) {
         scenes.push(new window['Scene' + i]());
     }
+
+    // fft init
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    var bufferLength = analyser.frequencyBinCount;
+    fftResult = new Uint8Array(bufferLength);
+    source = audioCtx.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    audio.play();
     changeScene(0); // start with scene 0
-    audio = $('#audio');
-    audio.trigger('play');
-    audio.get(0).muted = true;
 };
 
 var changeScene = function(num) {
@@ -74,10 +94,15 @@ var shouldChangeScene = function() {
     return false;
 };
 
+var fft = function() {
+
+};
+
 var prevFrame = 0;
 var render = function() {
     requestAnimationFrame(render);
-    curTime = audio.get(0).currentTime * 1000;
+    analyser.getByteTimeDomainData(fftResult);
+    curTime = audio.currentTime * 1000;
 
     if (shouldChangeScene()) {
         changeScene(curScene + 1);
@@ -89,7 +114,7 @@ var render = function() {
     renderer.render(curThreeScene, camera);
 };
 
-$(document).ready(function() {
+window.addEventListener('load', function(e) {
     init();
     render();
-});
+}, false);
