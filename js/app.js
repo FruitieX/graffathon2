@@ -26,7 +26,7 @@ var _bass = 0;
 var snare = 0;
 var _snare = 0;
 
-var numScenes = 5; // number of scenes
+var numScenes = 9; // number of scenes
 var scenes = []; // list of all scenes
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
 var curScene = -1;
@@ -60,6 +60,9 @@ var initRenderer = function() {
 var init = function() {
     $(document).keypress(function(event) {
         if (event.which >= 48 && event.which <= 57) {
+            if (!debugMode) {
+                console.warn('manual scene change triggered, debug mode active');
+            }
             debugMode = true;
             changeScene(event.which - 48);
         }
@@ -69,6 +72,7 @@ var init = function() {
     initRenderer();
 
     for (var i = 0; i < numScenes; i++) {
+        console.log('loading scene: ' + i);
         scenes.push(new window['Scene' + i]());
     }
 
@@ -147,7 +151,7 @@ var prevFrame = 0;
 var render = function() {
     requestAnimationFrame(render);
     fft();
-    curTime = 100 + audio.currentTime * 1000;
+    curTime = 0 + audio.currentTime * 1000;
 
     if (shouldChangeScene()) {
         changeScene(curScene + 1);
