@@ -9,7 +9,7 @@ function Scene7() {
         map: this.map
     });
     this.hue = 0;
-    this._sceneTime = barCycle * 16; // scene active time in ms
+    this._sceneTime = barCycle * 8; // scene active time in ms
 
     this.object = new THREE.Object3D();
 
@@ -57,10 +57,6 @@ Scene7.prototype.init = function() {
     composer.addPass( this.colorcorr );
 
     this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
-    /*
-    effect.uniforms[ 'amount' ].value = 0.0015;
-    effect.uniforms[ 'col_s' ].value = 0;
-    */
     composer.addPass(this.hblur);
 
     var kaleido = new THREE.ShaderPass( THREE.KaleidoShader );

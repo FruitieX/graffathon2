@@ -26,7 +26,7 @@ var _bass = 0;
 var snare = 0;
 var _snare = 0;
 
-var numScenes = 8; // number of scenes
+var numScenes = 9; // number of scenes
 var scenes = []; // list of all scenes
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
 var curScene = -1;
@@ -151,7 +151,7 @@ var prevFrame = 0;
 var render = function() {
     requestAnimationFrame(render);
     fft();
-    curTime = 100 + audio.currentTime * 1000;
+    curTime = 0 + audio.currentTime * 1000;
 
     if (shouldChangeScene()) {
         changeScene(curScene + 1);
