@@ -1,6 +1,6 @@
 function Scene1() {
     var geometry = new THREE.IcosahedronGeometry(2, 0);
-    var material = new THREE.MeshPhongMaterial( { color: 0xffffdd, specular: 0x009900, emissive: 0x006063, shininess: 50} );
+    var material = new THREE.MeshPhongMaterial( { color: 0xffffdd, specular: 0xffffff, shininess: 10} );
     this.obj = new THREE.Mesh( geometry, material );
     speed = 0.01;
     this._sceneTime = 10000; // scene active time in ms
@@ -14,13 +14,13 @@ Scene1.prototype.init = function() {
     curThreeScene.add(this.obj);
  
     // Add ambient lighting
-    var ambientLight = new THREE.AmbientLight(0x333333);
-    scene.add(ambientLight);
+    var ambientLight = new THREE.AmbientLight(0x000022);
+    curThreeScene.add(ambientLight);
 
     // Add directional lightning
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-    directionalLight.position.set( 0, 1, 1 );
-    scene.add( directionalLight );
+    directionalLight.position.set( 2, 2, 2 );
+    curThreeScene.add( directionalLight );
 };
 
 Scene1.prototype.deinit = function() {
