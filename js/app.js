@@ -26,7 +26,7 @@ var _bass = 0;
 var snare = 0;
 var _snare = 0;
 
-var numScenes = 9; // number of scenes
+var numScenes = 11; // number of scenes
 var scenes = []; // list of all scenes
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
 var curScene = -1;
@@ -59,12 +59,21 @@ var initRenderer = function() {
 
 var init = function() {
     $(document).keypress(function(event) {
+        console.log(event.which);
         if (event.which >= 48 && event.which <= 57) {
+            // 0 .. 9
             if (!debugMode) {
                 console.warn('manual scene change triggered, debug mode active');
             }
             debugMode = true;
             changeScene(event.which - 48);
+        } else if (event.which >= 97 && event.which <= 122) {
+            // a .. z
+            if (!debugMode) {
+                console.warn('manual scene change triggered, debug mode active');
+            }
+            debugMode = true;
+            changeScene(event.which - 97 + 10);
         }
     })
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
