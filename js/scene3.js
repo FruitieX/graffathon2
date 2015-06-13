@@ -14,6 +14,7 @@ Scene3.prototype.init = function() {
     camera = new THREE.PerspectiveCamera( 90, window.innerWidth/window.innerHeight, 0.1, 3000 );
     curThreeScene = new THREE.Scene();
     camera.position.z = 70;
+    renderer.setClearColor(0xeeeeee, 1);
 
     var PI2 = Math.PI * 2;
     group = new THREE.Group();
@@ -28,7 +29,8 @@ Scene3.prototype.init = function() {
         particle.position.x = Math.random() * 2000 - 1000;
         particle.position.y = Math.random() * 2000 - 1000;
         particle.position.z = Math.random() * 2000 - 1000;
-        particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
+        //particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
+        particle.scale.x = particle.scale.y = particle.scale.z = 100;
         group.add( particle );
     }
 
@@ -36,26 +38,25 @@ Scene3.prototype.init = function() {
     composer = new THREE.EffectComposer( renderer );
     composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
 
-    /*
     var effect = new THREE.ShaderPass( THREE.DotScreenShader );
-    effect.uniforms[ 'scale' ].value = 4;
+    effect.uniforms[ 'scale' ].value = 32;
+    effect.uniforms[ 'tSize' ].value = new THREE.Vector2( 32, 32 );
     composer.addPass( effect );
-    */
 
-    var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
-    effect.uniforms[ 'amount' ].value = 0.0015;
-    effect.renderToScreen = true;
-    composer.addPass( effect );
+    this.rgbeffect = new THREE.ShaderPass( THREE.RGBShiftShader );
+    this.rgbeffect.uniforms[ 'amount' ].value = 0.0015;
+    this.rgbeffect.renderToScreen = true;
+    composer.addPass( this.rgbeffect );
     composer.render();
 };
 
 Scene3.prototype.deinit = function() {
+    renderer.setClearColor(0x000000, 1);
 };
 
 Scene3.prototype.update = function(dt, t) {
     var speed = bass;
     speed = 0.005 + Math.max(0, (bass - 0.5) * 0.005);
-    //console.log(speed);
 
     this.rotation -= speed;
     this.origin.x += 10;
@@ -65,21 +66,24 @@ Scene3.prototype.update = function(dt, t) {
     camera.position.y = this.origin.z + radius * Math.sin( this.rotation );
     camera.lookAt(this.origin);
 
+    var rgbAmount = (speed - 0.005) / 0.0025;
+    rgbAmount = Math.pow(rgbAmount, 3);
+    rgbAmount *= 0.01;
+    this.rgbeffect.uniforms[ 'amount' ].value = rgbAmount;
+
     for (var i = 0; i < Math.round(bass * 10); i++) {
         var material = new THREE.SpriteMaterial({
-            color: Math.random() * 0x808080,
+            color: Math.random() * 0xffffff,
             map: this.map
         });
         particle = new THREE.Sprite( material );
         particle.position.x = this.origin.x + Math.random() * 2000 - 1000;
         particle.position.y = this.origin.y + Math.random() * 2000 - 1000;
         particle.position.z = this.origin.z + Math.random() * 2000 - 1000;
-        particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
+        particle.scale.x = particle.scale.y = particle.scale.z = bass * 200;
         group.add( particle );
         group.children.shift();
     }
 
-    //this.particles.rotateOnAxis(new THREE.Vector3(1, 1, 0), 0.01);
     dt = dt;
-    //console.log(dt);
 };
