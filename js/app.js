@@ -26,7 +26,7 @@ var _bass = 0;
 var snare = 0;
 var _snare = 0;
 
-var numScenes = 16; // number of scenes
+var numScenes = 18; // number of scenes
 var scenes = []; // list of all scenes
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
 var curScene = -1;
