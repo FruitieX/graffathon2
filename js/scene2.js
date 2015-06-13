@@ -10,7 +10,7 @@ function Scene2() {
         this.d2x.push(new THREE.Vector3(0,0,0));
     }
 
-    this._sceneTime = 5000; // scene active time in ms
+    this._sceneTime = barCycle * 8; // scene active time in ms
 };
 
 Scene2.prototype.init = function() {

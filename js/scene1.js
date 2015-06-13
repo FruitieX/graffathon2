@@ -11,7 +11,7 @@ function Scene1() {
     this.plane.receiveShadow = true;
     this.plane.scale.x = 10;
     this.plane.scale.z = 10;
-    this._sceneTime = 10000; // scene active time in ms
+    this._sceneTime = barCycle * 16; // scene active time in ms
     this.hue1 = 0;
     this.hue2 = 180;
 };
@@ -78,7 +78,7 @@ Scene1.prototype.update = function(dt, t) {
     this.hue2 = (this.hue2 + bass * 1) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
 
-    var cycle = 1000 / (bpm / 60) * 2;
+    var cycle = barCycle / 2;
     this.obj.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
 
     var lightness1 = Math.min(100, Math.max(0, Math.pow((2 * (t % cycle) - cycle) / 1000, 4) * 200));
@@ -107,16 +107,19 @@ Scene1.prototype.update = function(dt, t) {
     camera.lookAt( new THREE.Vector3(0, -2, 0) );
 
     // Camera wobble
+    /*
     if (this.cameraAngle >= Math.PI)
         camera.position.y -= 0.01;
     else
         camera.position.y += 0.01;
+    */
+    camera.position.y = 7 + Math.sin(t / 1000) * 1;
 
     // Rotate and scale object
     this.obj.rotation.x += this.speed;
     this.obj.rotation.y += this.speed * 8;
 
-    this.obj.scale.x = 0.5 + Math.max(0, (bass));
+    this.obj.scale.x = 0.25 + Math.max(0, (bass * 1.25));
     this.obj.scale.y = this.obj.scale.x;
     this.obj.scale.z = this.obj.scale.x;
 };

@@ -10,7 +10,7 @@ function Scene0() {
         height: 2
     });
     this.textMesh = new THREE.Mesh( textGeom, textMaterial );
-    this._sceneTime = 50000; // scene active time in ms
+    this._sceneTime = barCycle * 8; // scene active time in ms
     this.tempSpeed = 0;
     this.flag = 0.01;
 
