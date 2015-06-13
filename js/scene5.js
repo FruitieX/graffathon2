@@ -85,7 +85,7 @@ Scene5.prototype.update = function(dt, t) {
     var color = tinycolor(color_s).toRgb();
     this.material.color = new THREE.Color(color.r / 255, color.g / 255, color.b / 255);
 
-    this.rotation -= 0.005 + Math.max(0, (snare - 0.5)) * 0.05;
+    this.rotation -= 0.00025 * dt + Math.max(0, (snare - 0.5)) * 0.025;
     this.lightRotation += 0.15;
     //this.origin.x += 10;
     var radius = 500 - Math.max(50, (bass - 0.5) * 300);
