@@ -20,11 +20,11 @@ Scene2.prototype.init = function() {
     var particleGeometry = new THREE.Geometry();
     for (var i = 0; i < this.numParticles; i++) {
         particleGeometry.vertices.push(new THREE.Vector3((Math.random() - 0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100));
-        particleGeometry.vertexColors[i] = 0xFFFFFF * Math.random();
+        //particleGeometry.vertexColors[i] = 0xFFFFFF * Math.random();
     }
     var particleMaterial = new THREE.PointCloudMaterial({
         size: 1,
-        vertexColors:THREE.VertexColors
+        //vertexColors:THREE.VertexColors
     });
     this.particles = new THREE.PointCloud(particleGeometry, particleMaterial);
 
