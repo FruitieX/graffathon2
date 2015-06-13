@@ -112,7 +112,6 @@ var fft = function() {
     _bass = Math.min(100, Math.max(0, fftResult[bassBand] + 100) * 1.5) / 100;
     _bass = Math.exp(_bass) / Math.E;
     bass = bass * fftAvg + _bass * (1 - fftAvg);
-    console.log(bass);
 };
 
 var prevFrame = 0;
