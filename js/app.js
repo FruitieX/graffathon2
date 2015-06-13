@@ -99,7 +99,7 @@ var shouldChangeScene = function() {
 };
 
 var fft = function() {
-    var fftAvg = 0.75;
+    var fftAvg = 0.35;
     analyser.getFloatFrequencyData(fftResult);
     /*
     _.each(fftTempResult, function(band, index) {
@@ -107,7 +107,10 @@ var fft = function() {
     });
     */
 
-    _bass = Math.min(100, Math.max(0, fftResult[4] + 100)) / 100;
+    var bassBand = 4;
+
+    _bass = Math.min(100, Math.max(0, fftResult[bassBand] + 100) * 1.5) / 100;
+    _bass = Math.exp(_bass) / Math.E;
     bass = bass * fftAvg + _bass * (1 - fftAvg);
     console.log(bass);
 };
