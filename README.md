@@ -1,6 +1,5 @@
-# graffathondemo_grepme
-demo for graffathon
-name will change eventually :)
+# get_icosahedron();
+demo for graphics hackathon, `graffathon`!
 
 ## install dependencies
 ```
