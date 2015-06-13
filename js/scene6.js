@@ -13,7 +13,7 @@ function Scene6() {
 
     this.object = new THREE.Object3D();
 
-    var geometry = new THREE.SphereGeometry( 1, 4, 4 );
+    var geometry = new THREE.IcosahedronGeometry( 3, 0);
     this.material = new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } );
 
     for ( var i = 0; i < 100; i ++ ) {
@@ -22,7 +22,7 @@ function Scene6() {
         mesh.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 ).normalize();
         mesh.position.multiplyScalar( Math.random() * 400 );
         mesh.rotation.set( Math.random() * 2, Math.random() * 2, Math.random() * 2 );
-        mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 50;
+        mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 20;
         this.object.add( mesh );
 
     }
