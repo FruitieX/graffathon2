@@ -1,10 +1,10 @@
 function Scene2() {
-    console.log("asd");
-    this.numParticles = 19;
+    this.numParticles = 190;
     this.gravityCenter = new THREE.Vector3(0, 0, 0);
     this.gravityConstant = 0.0000001;
     this.dx = [];
     this.d2x = [];
+    this.lastBass = 0;
     for (var i = 0; i < this.numParticles; i++) {
         this.dx.push(new THREE.Vector3(0,0,0));
         this.d2x.push(new THREE.Vector3(0,0,0));
@@ -21,12 +21,19 @@ Scene2.prototype.init = function() {
 
     var particleGeometry = new THREE.Geometry();
     for (var i = 0; i < this.numParticles; i++) {
-        particleGeometry.vertices.push(new THREE.Vector3((Math.random() - 0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100));
-        //particleGeometry.vertexColors[i] = 0xFFFFFF * Math.random();
+        particleGeometry.vertices.push(new THREE.Vector3((Math.random() - 0.5)*10, (Math.random()-0.5)*10, (Math.random()-0.5)*10));
+        particleGeometry.colors.push(new THREE.Color(0xFFFFFF * Math.random()));// * Math.random());
     }
-    var particleMaterial = new THREE.PointCloudMaterial({
+    /*var particleMaterial = new THREE.PointCloudMaterial({
         size: 1,
-        //vertexColors:THREE.VertexColors
+        vertexColors:THREE.VertexColors
+    });*/
+    var particleMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            bass: {type: "f", value: bass},
+        },
+
+        vertexShader: document.getElementById("");
     });
     this.particles = new THREE.PointCloud(particleGeometry, particleMaterial);
 
@@ -39,7 +46,12 @@ Scene2.prototype.deinit = function() {
 Scene2.prototype.update = function(dt, t) {
     //this.particles.rotateOnAxis(new THREE.Vector3(1, 1, 0), 0.01);
     dt = dt;
+    var time = audio.currentTime * 1000;
     //console.log(dt);
+    var is_bass = (bass > 0.95) && ((time - this.lastBass) > 400);
+    if (is_bass) {
+        this.lastBass = time;
+    }
     for (var i = 0; i < this.numParticles; i++) {
         this.particles.geometry.vertices[i].add(this.dx[i].clone().multiplyScalar(dt));
         this.particles.geometry.verticesNeedUpdate = true;
@@ -48,17 +60,17 @@ Scene2.prototype.update = function(dt, t) {
             //console.log(this.d2x[i]);
         }
         var diff = this.gravityCenter.clone().sub(this.particles.geometry.vertices[i]);
-        this.d2x[i] = diff.multiplyScalar(this.gravityConstant * (1- Math.random() * 0.1));
+        var dir = diff.clone().normalize();
+        var str = diff.length();
+        this.d2x[i] = dir.clone().multiplyScalar(str * this.gravityConstant * (1- Math.random() * 0.1));
         this.d2x[i].z += (Math.random() - 0.5) * 0.1 * this.gravityConstant;
-    }
-    var time = audio.currentTime * 1000;
-    this.gravityCenter.x = Math.sin(time * 0.1) * 10;
-    this.gravityCenter.y = Math.cos(time * 0.1) * 10;
-    var timeMod = time % 2000;
-    if (timeMod > 1000) {
-        this.gravityConstant = -0.000001;
-    } else{
-        this.gravityConstant = 0.000001;
+
+        if (is_bass) {
+            this.dx[i].add(dir.clone().multiplyScalar(-0.010));
+        }
     }
 
+    this.gravityCenter.x = Math.sin(time * 0.1) * 5;
+    this.gravityCenter.y = Math.cos(time * 0.1) * 5;
+    var timeMod = time % 2000;
 };
