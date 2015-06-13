@@ -1,8 +1,12 @@
 'use strict';
 
+// global variables (are beautiful)
+
 var camera;
 var renderer;
 var composer;
+
+var debugMode = false;
 
 var audio;
 var audioCtx;
@@ -49,6 +53,7 @@ var initRenderer = function() {
 var init = function() {
     $(document).keypress(function(event) {
         if (event.which >= 48 && event.which <= 57) {
+            debugMode = true;
             changeScene(event.which - 48);
         }
     })
@@ -96,8 +101,8 @@ var changeScene = function(num) {
 };
 
 var shouldChangeScene = function() {
-    // are we at the last scene?
-    if (curScene === numScenes - 1) {
+    // debug mode on or are we at the last scene?
+    if (debugMode || curScene === numScenes - 1) {
         return false
     }
 
