@@ -8,17 +8,8 @@ function Scene4() {
         map: this.map
     });
     this._sceneTime = 5000; // scene active time in ms
-};
 
-Scene4.prototype.init = function() {
-    camera = new THREE.PerspectiveCamera( 90, window.innerWidth/window.innerHeight, 0.1, 3000 );
-    curThreeScene = new THREE.Scene();
-    camera.position.z = 70;
-    renderer.setClearColor(0xeeeeee, 1);
-
-    var PI2 = Math.PI * 2;
-    group = new THREE.Group();
-    curThreeScene.add( group );
+    this.group = new THREE.Group();
 
     for (var i = 0; i < 1000; i++) {
         var material = new THREE.SpriteMaterial({
@@ -31,8 +22,18 @@ Scene4.prototype.init = function() {
         particle.position.z = Math.random() * 2000 - 1000;
         //particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
         particle.scale.x = particle.scale.y = particle.scale.z = 100;
-        group.add( particle );
+        this.group.add( particle );
     }
+
+};
+
+Scene4.prototype.init = function() {
+    camera = new THREE.PerspectiveCamera( 90, window.innerWidth/window.innerHeight, 0.1, 3000 );
+    curThreeScene = new THREE.Scene();
+    camera.position.z = 70;
+    renderer.setClearColor(0xeeeeee, 1);
+
+    curThreeScene.add( this.group );
 
     // postprocessing
     composer = new THREE.EffectComposer( renderer );
@@ -86,8 +87,8 @@ Scene4.prototype.update = function(dt, t) {
         particle.position.y = this.origin.y + Math.random() * 2000 - 1000;
         particle.position.z = this.origin.z + Math.random() * 2000 - 1000;
         particle.scale.x = particle.scale.y = particle.scale.z = bass * 200;
-        group.add( particle );
-        group.children.shift();
+        this.group.add( particle );
+        this.group.children.shift();
     }
     */
 

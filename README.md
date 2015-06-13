@@ -4,7 +4,7 @@ name will change eventually :)
 
 ## install dependencies
 ```
-npm install -g gulp bower
+npm install -g gulp bower # might need sudo
 npm install
 bower install
 ```
