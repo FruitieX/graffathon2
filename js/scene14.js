@@ -1,75 +1,52 @@
 function Scene14() {
-    var geometry = new THREE.IcosahedronGeometry(3, 0);
-    var material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 1, shading: THREE.FlatShading} );
-    this.obj1 = new THREE.Mesh( geometry, material );
-    this.obj1.castShadow = true;
-    this.obj2 = new THREE.Mesh( geometry, material );
-    this.obj2.position.z = -10;
-    this.obj2.castShadow = true;
-    this.obj3 = new THREE.Mesh( geometry, material );
-    this.obj3.position.z = 10;
-    this.obj3.castShadow = true;
-    var geometry = new THREE.PlaneGeometry( 1000, 1000 );
-    var material = new THREE.MeshPhongMaterial( {color: 0x555555, side: THREE.DoubleSide} );
-    this.plane = new THREE.Mesh( geometry, material );
-    this.plane.rotateOnAxis(new THREE.Vector3(1, 0, 0).normalize(), Math.PI/2);
-    this.plane.position.y -= 8;
-    this.plane.receiveShadow = true;
-    this.plane.scale.x = 10;
-    this.plane.scale.z = 10;
+    this.map = THREE.ImageUtils.loadTexture('particle.png');
+    this.map.minFilter = THREE.LinearFilter;
+    this.rotation = 0;
+    this.lightRotation = 0;
+    this.origin = new THREE.Vector3(0, 0, 0);
+    this.material = new THREE.SpriteMaterial({
+        color: Math.random() * 0x808080,
+        map: this.map
+    });
+    this.hue = 0;
     this._sceneTime = barCycle * 8; // scene active time in ms
-    this.hue1 = 0;
-    this.hue2 = 180;
+
+    this.object = new THREE.Object3D();
+
+    var geometry = new THREE.IcosahedronGeometry( 3, 0);
+    this.material = new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } );
+
+    for ( var i = 0; i < 100; i ++ ) {
+
+        var mesh = new THREE.Mesh( geometry, this.material );
+        mesh.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 ).normalize();
+        mesh.position.multiplyScalar( Math.random() * 400 );
+        mesh.rotation.set( Math.random() * 2, Math.random() * 2, Math.random() * 2 );
+        mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 20;
+        this.object.add( mesh );
+
+    }
 };
 
 Scene14.prototype.init = function() {
-    camera = new THREE.PerspectiveCamera( 70, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-    // Init variables
-    this.cameraDistance = 10;
-    this.cameraAngle = 0;
-    this.speed = 0.01;
-    
-    // Add objects
+    camera = new THREE.PerspectiveCamera( 90, window.innerWidth/window.innerHeight, 0.1, 3000 );
     curThreeScene = new THREE.Scene();
-    camera.position.z = 15;
-    camera.position.y = 5;
-    curThreeScene.add(this.obj1);
-    curThreeScene.add(this.obj2);
-    curThreeScene.add(this.obj3);
-    curThreeScene.add(this.plane);
+    camera.position.z = 400;
+    renderer.setClearColor(0xeeeeee, 1);
 
-    // Add ambient lighting
-    /*
-    var ambientLight = new THREE.AmbientLight(0x111122);
+    curThreeScene.add( this.object );
+    curThreeScene.add( new THREE.AmbientLight( 0x050505 ) );
+
+    this.light = new THREE.DirectionalLight( 0xffffff );
+    this.light.position.set( 1, 1, 1 );
+    curThreeScene.add( this.light );
+
+    var ambientLight = new THREE.AmbientLight(0x444444);
     curThreeScene.add(ambientLight);
-    */
-
-    // Add directional lightning
-    this.directionalLight = new THREE.DirectionalLight( 0xdd00dd, 1 );
-    this.directionalLight.castShadow = true;
-    this.directionalLight.shadowMapWidth = 2048;
-    this.directionalLight.shadowMapHeight = 2048;
-    this.directionalLight.position.set( 50, 30, 2 );
-    curThreeScene.add(this.directionalLight);
-
-    // Add point lightning
-    this.pointLight = new THREE.PointLight( 0xffffff, 1, 1000 );
-    this.pointLight.position.set( 0, -5, 0 );
-    curThreeScene.add(this.pointLight);
-
-    // Add shadows
-    renderer.shadowMapEnabled = true;
-    renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
     // postprocessing
     composer = new THREE.EffectComposer( renderer );
     composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
-
-    var dotvignette = new THREE.ShaderPass( THREE.VignetteShader );
-    dotvignette.uniforms['darkness'].value = 0.75;
-    dotvignette.uniforms['offset'].value = 1.0;
-    composer.addPass(dotvignette);
 
     var effect = new THREE.ShaderPass( THREE.DotScreenShader );
     effect.uniforms[ 'scale' ].value = 32;
@@ -80,83 +57,48 @@ Scene14.prototype.init = function() {
     this.rgbeffect.uniforms[ 'amount' ].value = 0.0015;
     composer.addPass( this.rgbeffect );
 
+    this.colorcorr = new THREE.ShaderPass( THREE.ColorCorrectionShader );
+    //this.colorcorr.uniforms[ 'amount' ].value = 0.0015;
+    composer.addPass( this.colorcorr );
+
     this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
+    /*
+    effect.uniforms[ 'amount' ].value = 0.0015;
+    effect.uniforms[ 'col_s' ].value = 0;
+    */
     composer.addPass(this.hblur);
 
     var vignette = new THREE.ShaderPass( THREE.VignetteShader );
-    vignette.uniforms['darkness'].value = 1.0;
+    vignette.uniforms['darkness'].value = 1.5;
     vignette.uniforms['offset'].value = 1.0;
     vignette.renderToScreen = true;
     composer.addPass(vignette);
 };
 
 Scene14.prototype.deinit = function() {
-    renderer.shadowMapEnabled = false;
+    renderer.setClearColor(0x000000, 1);
 };
 
 Scene14.prototype.update = function(dt, t) {
-    this.hue1 = (this.hue1 + bass * 1) % 360;
-    this.hue2 = (this.hue2 + bass * 1) % 360;
-    this.lightness = Math.max(50, (bass - 0.5) * 100);
+    this.hue = (this.hue + bass * 0.05 * dt) % 360;
+    //this.lightness = Math.max(0, (bass - 0.5) * 100);
+    this.lightness = 35;
+    var color_s = 'hsl(' + this.hue + '%, 100%, ' + this.lightness + '%)';
+    var color = tinycolor(color_s).toRgb();
+    this.material.color = new THREE.Color(color.r / 255, color.g / 255, color.b / 255);
 
-    var cycle = barCycle / 2;
-    this.obj1.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
-    this.obj2.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
-    this.obj3.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
+    this.rotation -= 0.0005 * dt + Math.max(0, (snare - 0.5)) * 0.15;
+    this.lightRotation += 0.15;
+    //this.origin.x += 10;
+    var radius = 600 + Math.sin(t / 1000 * Math.PI * 1 / 4) * 100 - Math.min(100, (bass - 0.5) * 200);
 
-    var lightness1 = Math.min(100, Math.max(0, Math.pow((2 * (t % cycle) - cycle) / 1000, 4) * 300));
+    camera.position.x = this.origin.x + radius * Math.sin( this.rotation );
+    camera.position.y = this.origin.y + radius * Math.sin(t / 1000) / 3;
+    camera.position.z = this.origin.z + radius * Math.cos( this.rotation);
+    camera.lookAt(this.origin);
 
-    var color_s1 = 'hsl(' + this.hue1 + '%, 100%, ' + lightness1 + '%)';
-    var color1 = tinycolor(color_s1).toRgb();
-    this.pointLight.color = new THREE.Color(color1.r / 255, color1.g / 255, color1.b / 255);
+    this.light.x = this.origin.x + radius * Math.cos( this.lightRotation );
+    this.light.s = this.origin.y + radius * Math.cos( this.lightRotation );
 
-    var color_s2 = 'hsl(' + this.hue2 + '%, 100%, ' + this.lightness + '%)';
-    var color2 = tinycolor(color_s2).toRgb();
-    //this.directionalLight.color = new THREE.Color(color2.r / 255, color2.g / 255, color2.b / 255);
-
-    this.speed = 0.02 * bass;
-
-    //curThreeScene.children[4].color = new THREE.Color(bass, bass, bass);
-
-    // Increment camera angle [0,2PI]
-    this.cameraAngle += 0.00025 * dt % Math.PI * 2;
-    /*
-    if (this.cameraAngle > Math.PI * 2)
-        this.cameraAngle = 0;
-    */
-
-    // Camera spin around origin
-    camera.position.x = Math.cos(this.cameraAngle) * this.cameraDistance;
-    camera.position.z = Math.sin(this.cameraAngle) * this.cameraDistance;
-    camera.up = new THREE.Vector3(0,1,0);
-    camera.lookAt( new THREE.Vector3(0, -2, 0) );
-
-    // Camera wobble
-    /*
-    if (this.cameraAngle >= Math.PI)
-        camera.position.y -= 0.01;
-    else
-        camera.position.y += 0.01;
-    */
-    camera.position.y = 7 + Math.sin(t / 1000) * 1;
-
-    // Rotate and scale object
-    this.obj1.rotation.x += this.speed * 0.1 * dt;
-    this.obj1.rotation.y += this.speed * 8 * 0.1 * dt;
-    this.obj1.scale.x = this.obj1.scale.y = this.obj1.scale.z = 0.25 + Math.max(0, (bass * 1.25));
-
-    this.obj2.rotation.x += this.speed * 0.1 * dt;
-    this.obj2.rotation.y += this.speed * 8 * 0.1 * dt;
-    this.obj2.scale.x = this.obj2.scale.y = this.obj2.scale.z = 0.25 + Math.max(0, (bass * 1.25));
-
-    this.obj3.rotation.x += this.speed * 0.1 * dt;
-    this.obj3.rotation.y += this.speed * 8 * 0.1 * dt;
-    this.obj3.scale.x = this.obj3.scale.y = this.obj3.scale.z = 0.25 + Math.max(0, (bass * 1.25));
-
-    cycle *= 2;
-    var rgbAmount = Math.pow((2 * (t % cycle) - cycle) / 1000, 6);
-    rgbAmount = Math.pow(rgbAmount, 3);
-    rgbAmount *= 0.00025;
-    this.rgbeffect.uniforms[ 'amount' ].value = 0.001 + rgbAmount + snare * 0.002;
-    this.hblur.uniforms[ 'h' ].value = Math.max(0, rgbAmount * 10) * 2 / 256;
+    this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 2 / 256;
 };
