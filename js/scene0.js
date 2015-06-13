@@ -15,6 +15,7 @@ function Scene0() {
 };
 
 Scene0.prototype.init = function() {
+    camera = new THREE.PerspectiveCamera( 70, window.innerWidth/window.innerHeight, 0.1, 1000 );
     curThreeScene = new THREE.Scene();
     camera.position.z = 5;
     curThreeScene.add(this.cube);

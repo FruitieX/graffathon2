@@ -2,6 +2,7 @@
 
 var camera;
 var renderer;
+var composer;
 
 var audio;
 var audioCtx;
@@ -26,16 +27,11 @@ $(document).ready(function() {
     document.body.appendChild(audio);
 });
 
-var init = function() {
-    $(document).keypress(function(event) {
-        if (event.which >= 48 && event.which <= 57) {
-            changeScene(event.which - 48);
-        }
-    })
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
+var initRenderer = function() {
+    composer = null;
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.innerHTML = '';
     document.body.appendChild(renderer.domElement);
 
     function onWindowResize() {
@@ -44,7 +40,19 @@ var init = function() {
 
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
+    window.removeEventListener('resize', onWindowResize, false);
     window.addEventListener('resize', onWindowResize, false);
+};
+
+var init = function() {
+    $(document).keypress(function(event) {
+        if (event.which >= 48 && event.which <= 57) {
+            changeScene(event.which - 48);
+        }
+    })
+    camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+    initRenderer();
 
     for (var i = 0; i < numScenes; i++) {
         scenes.push(new window['Scene' + i]());
@@ -76,6 +84,7 @@ var changeScene = function(num) {
         scenes[curScene].deinit();
         scenesElapsedTime += scenes[curScene]._sceneTime;
     }
+    composer = null;
 
     // init next scene
     curScene = num;
@@ -127,7 +136,11 @@ var render = function() {
     scenes[curScene].update(curTime - prevFrame, curTime);
     prevFrame= curTime;
 
-    renderer.render(curThreeScene, camera);
+    if (composer) {
+        composer.render();
+    } else {
+        renderer.render(curThreeScene, camera);
+    }
 };
 
 window.addEventListener('load', function(e) {
