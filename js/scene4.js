@@ -77,7 +77,7 @@ Scene4.prototype.deinit = function() {
 };
 
 Scene4.prototype.update = function(dt, t) {
-    this.hue = (this.hue + bass * 2) % 360;
+    this.hue = (this.hue + bass * 1) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
     var color_s = 'hsl(' + this.hue + '%, 100%, ' + this.lightness + '%)';
     var color = tinycolor(color_s).toRgb();
