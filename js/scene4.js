@@ -7,11 +7,11 @@ function Scene4() {
         color: Math.random() * 0x808080,
         map: this.map
     });
-    this._sceneTime = barCycle * 16; // scene active time in ms
+    this._sceneTime = barCycle * 8; // scene active time in ms
     this.group = new THREE.Group();
     this.hue = 0;
 
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 1024; i++) {
         var material = new THREE.SpriteMaterial({
             color: Math.random() * 0x808080,
             map: this.map
@@ -49,10 +49,6 @@ Scene4.prototype.init = function() {
     effect.uniforms[ 'tSize' ].value = new THREE.Vector2( 32, 32 );
     composer.addPass( effect );
 
-    effect = new THREE.ShaderPass( THREE.KaleidoShader );
-    effect.uniforms['sides'].value = 6;
-    composer.addPass( effect );
-
     this.colorify = new THREE.ShaderPass( THREE.ColorifyShader );
     this.colorify.uniforms['color'].value = new THREE.Color(0.5, 0, 1);
     composer.addPass(this.colorify);
@@ -62,10 +58,8 @@ Scene4.prototype.init = function() {
     //this.rgbeffect.renderToScreen = true;
     composer.addPass( this.rgbeffect );
 
-    var vignetteFull = new THREE.ShaderPass( THREE.VignetteShader );
-    vignetteFull.uniforms['darkness'].value = 3;
-    vignetteFull.uniforms['offset'].value = 1.1;
-    composer.addPass(vignetteFull);
+    this.colorcorr = new THREE.ShaderPass( THREE.ColorCorrectionShader );
+    composer.addPass( this.colorcorr );
 
     this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
     this.hblur.renderToScreen = true;
@@ -84,7 +78,7 @@ Scene4.prototype.update = function(dt, t) {
 
     this.hblur.uniforms[ 'h' ].value = 0.0005 + Math.max(0, (snare - 0.5)) / 512;
 
-    this.hue = (this.hue + bass * 1) % 360;
+    this.hue = (this.hue + bass * 0.01 * dt) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
     var color_s = 'hsl(' + this.hue + '%, 100%, ' + this.lightness + '%)';
     var color = tinycolor(color_s).toRgb();
@@ -103,7 +97,7 @@ Scene4.prototype.update = function(dt, t) {
     rgbAmount *= 0.025;
     this.rgbeffect.uniforms[ 'amount' ].value = rgbAmount;
 
-    for (var i = 0; i < Math.round(bass * 10); i++) {
+    for (var i = 0; i < Math.round(bass * 20); i++) {
         var material = new THREE.SpriteMaterial({
             color: Math.random() * 0xffffff,
             map: this.map
