@@ -107,16 +107,19 @@ Scene1.prototype.update = function(dt, t) {
     camera.lookAt( new THREE.Vector3(0, -2, 0) );
 
     // Camera wobble
+    /*
     if (this.cameraAngle >= Math.PI)
         camera.position.y -= 0.01;
     else
         camera.position.y += 0.01;
+    */
+    camera.position.y = 7 + Math.sin(t / 1000) * 1;
 
     // Rotate and scale object
     this.obj.rotation.x += this.speed;
     this.obj.rotation.y += this.speed * 8;
 
-    this.obj.scale.x = 0.5 + Math.max(0, (bass));
+    this.obj.scale.x = 0.25 + Math.max(0, (bass * 1.25));
     this.obj.scale.y = this.obj.scale.x;
     this.obj.scale.z = this.obj.scale.x;
 };
