@@ -26,7 +26,7 @@ var _bass = 0;
 var snare = 0;
 var _snare = 0;
 
-var numScenes = 6; // number of scenes
+var numScenes = 7; // number of scenes
 var scenes = []; // list of all scenes
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
 var curScene = -1;
@@ -72,6 +72,7 @@ var init = function() {
     initRenderer();
 
     for (var i = 0; i < numScenes; i++) {
+        console.log('loading scene: ' + i);
         scenes.push(new window['Scene' + i]());
     }
 

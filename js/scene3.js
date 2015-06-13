@@ -49,10 +49,6 @@ Scene3.prototype.init = function() {
     effect.uniforms[ 'tSize' ].value = new THREE.Vector2( 32, 32 );
     composer.addPass( effect );
 
-    effect = new THREE.ShaderPass( THREE.KaleidoShader );
-    effect.uniforms['sides'].value = 6;
-    composer.addPass( effect );
-
     this.colorify = new THREE.ShaderPass( THREE.ColorifyShader );
     this.colorify.uniforms['color'].value = new THREE.Color(0.5, 0, 1);
     composer.addPass(this.colorify);
@@ -90,8 +86,8 @@ Scene3.prototype.update = function(dt, t) {
     var color = tinycolor(color_s).toRgb();
     this.colorify.uniforms['color'].value = new THREE.Color(color.r / 255, color.g / 255, color.b / 255);
 
-    this.rotation -= speed;
-    this.origin.x += 10;
+    this.rotation -= speed * 0.1 * dt;
+    this.origin.x += 10 * 0.1 * dt;
     var radius = 500 + bass * 500;
     camera.position.x = this.origin.x + radius * Math.cos( this.rotation );
     camera.position.z = this.origin.y + radius * Math.sin( this.rotation );
