@@ -144,7 +144,7 @@ var prevFrame = 0;
 var render = function() {
     requestAnimationFrame(render);
     fft();
-    curTime = audio.currentTime * 1000;
+    curTime = 100 + audio.currentTime * 1000;
 
     if (shouldChangeScene()) {
         changeScene(curScene + 1);
