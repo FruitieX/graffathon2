@@ -8,6 +8,8 @@ var audioCtx;
 var analyser;
 var source;
 var fftResult;
+var fftTempResult;
+var bass;
 
 var numScenes = 3; // number of scenes
 var scenes = []; // list of all scenes
@@ -50,9 +52,10 @@ var init = function() {
     // fft init
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 2048;
+    analyser.fftSize = 1024;
     var bufferLength = analyser.frequencyBinCount;
-    fftResult = new Uint8Array(bufferLength);
+    fftResult = Array.apply(null, new Array(bufferLength)).map(Number.prototype.valueOf, 0);
+    fftTempResult = new Uint8Array(bufferLength);
     source = audioCtx.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
@@ -95,13 +98,24 @@ var shouldChangeScene = function() {
 };
 
 var fft = function() {
+    var fftAvg = 0.5;
+    analyser.getByteTimeDomainData(fftTempResult);
+    _.each(fftTempResult, function(band, index) {
+        fftResult[index] = fftResult[index] * fftAvg + band * (1 - fftAvg);
+    });
 
+    bass = 0;
+    //console.log(fftResult);
+    for (var i = 1; i < 4; i++) {
+        bass += fftResult[i];
+    }
+    //console.log(bass / 256);
 };
 
 var prevFrame = 0;
 var render = function() {
     requestAnimationFrame(render);
-    analyser.getByteTimeDomainData(fftResult);
+    fft();
     curTime = audio.currentTime * 1000;
 
     if (shouldChangeScene()) {

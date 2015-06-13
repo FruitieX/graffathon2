@@ -58,4 +58,8 @@ Scene1.prototype.update = function(dt) {
 
     this.obj.rotation.x += 0.01;
     this.obj.rotation.y += 0.08;
+
+    this.obj.scale.x = 1 + Math.max(0, (bass));
+    this.obj.scale.y = this.obj.scale.x;
+    this.obj.scale.z = this.obj.scale.x;
 };

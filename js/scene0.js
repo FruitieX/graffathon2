@@ -30,8 +30,6 @@ Scene0.prototype.deinit = function() {
 };
 
 Scene0.prototype.update = function(dt) {
-    console.log(fftResult);
-
     this.cube.rotation.x += 0.01;
     this.cube.rotation.y += 0.01;
 };
