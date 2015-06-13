@@ -28,7 +28,7 @@ Scene10.prototype.init = function() {
     // Init variables
     this.cameraDistance = 10;
     this.cameraAngle = 0;
-    this.speed = 0.01;
+    this.speed = 0.001;
     
     // Add objects
     curThreeScene = new THREE.Scene();
@@ -104,12 +104,12 @@ Scene10.prototype.update = function(dt, t) {
     this.directionalLight.color = new THREE.Color(color2.r / 255, color2.g / 255, color2.b / 255);
     this.ambientLight.color = new THREE.Color(color2.r / 512, color2.g / 512, color2.b / 512);
 
-    this.speed = 0.02 * bass;
+    this.speed = 0.005 * bass;
 
     //curThreeScene.children[4].color = new THREE.Color(bass, bass, bass);
 
     // Increment camera angle [0,2PI]
-    this.cameraAngle += 0.00025 * dt % Math.PI * 2;
+    this.cameraAngle += 0.00005 * dt % Math.PI * 2;
     /*
     if (this.cameraAngle > Math.PI * 2)
         this.cameraAngle = 0;
