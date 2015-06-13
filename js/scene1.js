@@ -12,6 +12,8 @@ function Scene1() {
     this.plane.scale.x = 10;
     this.plane.scale.z = 10;
     this._sceneTime = 10000; // scene active time in ms
+    this.hue1 = 0;
+    this.hue2 = 180;
 };
 
 Scene1.prototype.init = function() {
@@ -24,8 +26,8 @@ Scene1.prototype.init = function() {
     
     // Add objects
     curThreeScene = new THREE.Scene();
-    camera.position.z = 10;
-    camera.position.y = 4;
+    camera.position.z = 15;
+    camera.position.y = 5;
     curThreeScene.add(this.obj);
     curThreeScene.add(this.plane);
 
@@ -36,17 +38,17 @@ Scene1.prototype.init = function() {
     */
 
     // Add directional lightning
-    var directionalLight = new THREE.DirectionalLight( 0x00dddd, 0.25 );
-    directionalLight.castShadow = true;
-    directionalLight.shadowMapWidth = 2048;
-    directionalLight.shadowMapHeight = 2048;
-    directionalLight.position.set( 50, 30, 2 );
-    curThreeScene.add(directionalLight);
+    this.directionalLight = new THREE.DirectionalLight( 0x00dddd, 0.25 );
+    this.directionalLight.castShadow = true;
+    this.directionalLight.shadowMapWidth = 2048;
+    this.directionalLight.shadowMapHeight = 2048;
+    this.directionalLight.position.set( 50, 30, 2 );
+    curThreeScene.add(this.directionalLight);
 
     // Add point lightning
-    var pointLight = new THREE.PointLight( 0xffffff, 1, 200 );
-    pointLight.position.set( -50, 20, 0 );
-    curThreeScene.add(pointLight);
+    this.pointLight = new THREE.PointLight( 0xffffff, 1, 200 );
+    this.pointLight.position.set( 0, -5, 0 );
+    curThreeScene.add(this.pointLight);
 
     // Add shadows
     renderer.shadowMapEnabled = true;
@@ -72,6 +74,22 @@ Scene1.prototype.deinit = function() {
 };
 
 Scene1.prototype.update = function(dt, t) {
+    this.hue1 = (this.hue1 + bass * 1) % 360;
+    this.hue2 = (this.hue2 + bass * 1) % 360;
+    this.lightness = Math.max(50, (bass - 0.5) * 100);
+
+    var cycle = 1000 / (bpm / 60) * 2;
+    this.obj.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
+
+    var lightness1 = Math.min(100, Math.max(0, Math.pow((2 * (t % cycle) - cycle) / 1000, 4) * 200));
+
+    var color_s1 = 'hsl(' + this.hue1 + '%, 100%, ' + lightness1 + '%)';
+    var color1 = tinycolor(color_s1).toRgb();
+    this.pointLight.color = new THREE.Color(color1.r / 255, color1.g / 255, color1.b / 255);
+
+    var color_s2 = 'hsl(' + this.hue2 + '%, 100%, ' + this.lightness + '%)';
+    var color2 = tinycolor(color_s2).toRgb();
+    //this.directionalLight.color = new THREE.Color(color2.r / 255, color2.g / 255, color2.b / 255);
 
     this.speed = 0.02 * bass;
 
@@ -101,7 +119,4 @@ Scene1.prototype.update = function(dt, t) {
     this.obj.scale.x = 0.5 + Math.max(0, (bass));
     this.obj.scale.y = this.obj.scale.x;
     this.obj.scale.z = this.obj.scale.x;
-
-    var cycle = 1000 / (bpm / 60) * 2;
-    this.obj.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
 };
