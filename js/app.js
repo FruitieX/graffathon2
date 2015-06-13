@@ -8,8 +8,9 @@ var audioCtx;
 var analyser;
 var source;
 var fftResult;
-var fftTempResult;
-var bass;
+//var fftTempResult;
+var bass = 0;
+var _bass = 0;
 
 var numScenes = 3; // number of scenes
 var scenes = []; // list of all scenes
@@ -54,8 +55,8 @@ var init = function() {
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 1024;
     var bufferLength = analyser.frequencyBinCount;
-    fftResult = Array.apply(null, new Array(bufferLength)).map(Number.prototype.valueOf, 0);
-    fftTempResult = new Uint8Array(bufferLength);
+    //fftResult = Array.apply(null, new Array(bufferLength)).map(Number.prototype.valueOf, 0);
+    fftResult = new Float32Array(bufferLength);
     source = audioCtx.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
@@ -98,18 +99,17 @@ var shouldChangeScene = function() {
 };
 
 var fft = function() {
-    var fftAvg = 0.5;
-    analyser.getByteTimeDomainData(fftTempResult);
+    var fftAvg = 0.75;
+    analyser.getFloatFrequencyData(fftResult);
+    /*
     _.each(fftTempResult, function(band, index) {
         fftResult[index] = fftResult[index] * fftAvg + band * (1 - fftAvg);
     });
+    */
 
-    bass = 0;
-    //console.log(fftResult);
-    for (var i = 1; i < 4; i++) {
-        bass += fftResult[i];
-    }
-    //console.log(bass / 256);
+    _bass = Math.min(100, Math.max(0, fftResult[4] + 100)) / 100;
+    bass = bass * fftAvg + _bass * (1 - fftAvg);
+    console.log(bass);
 };
 
 var prevFrame = 0;
