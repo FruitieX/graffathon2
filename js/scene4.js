@@ -26,7 +26,6 @@ function Scene4() {
         this.object.add( mesh );
 
     }
-
 };
 
 Scene4.prototype.init = function() {
@@ -36,11 +35,14 @@ Scene4.prototype.init = function() {
     renderer.setClearColor(0xeeeeee, 1);
 
     curThreeScene.add( this.object );
-    curThreeScene.add( new THREE.AmbientLight( 0x222222 ) );
+    curThreeScene.add( new THREE.AmbientLight( 0x050505 ) );
 
     this.light = new THREE.DirectionalLight( 0xffffff );
     this.light.position.set( 1, 1, 1 );
     curThreeScene.add( this.light );
+
+    var ambientLight = new THREE.AmbientLight(0x444444);
+    curThreeScene.add(ambientLight);
 
     // postprocessing
     composer = new THREE.EffectComposer( renderer );
@@ -49,6 +51,10 @@ Scene4.prototype.init = function() {
     this.rgbeffect = new THREE.ShaderPass( THREE.RGBShiftShader );
     this.rgbeffect.uniforms[ 'amount' ].value = 0.0015;
     composer.addPass( this.rgbeffect );
+
+    this.colorcorr = new THREE.ShaderPass( THREE.ColorCorrectionShader );
+    //this.colorcorr.uniforms[ 'amount' ].value = 0.0015;
+    composer.addPass( this.colorcorr );
 
     this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
     /*
@@ -72,9 +78,8 @@ Scene4.prototype.deinit = function() {
 
 Scene4.prototype.update = function(dt, t) {
     this.hue = (this.hue + bass) % 360;
-    this.lightness = Math.max(0, (bass - 0.5) * 100);
+    this.lightness = Math.max(50, (bass - 0.5) * 100);
     var color_s = 'hsl(' + this.hue + '%, 100%, ' + this.lightness + '%)';
-    console.log(color_s);
     var color = tinycolor(color_s).toRgb();
     this.material.color = new THREE.Color(color.r / 255, color.g / 255, color.b / 255);
 
@@ -89,7 +94,6 @@ Scene4.prototype.update = function(dt, t) {
 
     this.light.x = this.origin.x + radius * Math.cos( this.lightRotation );
     this.light.y = this.origin.y + radius * Math.sin( this.lightRotation );
-    this.light.z = this.origin.z + radius * Math.cos( this.lightRotation );
 
     this.hblur.uniforms[ 'h' ].value = Math.max(0, (bass - 0.5)) * 2 / 256;
 };
