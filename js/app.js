@@ -60,6 +60,9 @@ var initRenderer = function() {
 var init = function() {
     $(document).keypress(function(event) {
         if (event.which >= 48 && event.which <= 57) {
+            if (!debugMode) {
+                console.warn('manual scene change triggered, debug mode active');
+            }
             debugMode = true;
             changeScene(event.which - 48);
         }
