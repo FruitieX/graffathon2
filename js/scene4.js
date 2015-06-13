@@ -77,13 +77,13 @@ Scene4.prototype.deinit = function() {
 };
 
 Scene4.prototype.update = function(dt, t) {
-    this.hue = (this.hue + bass) % 360;
+    this.hue = (this.hue + bass * 2) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
     var color_s = 'hsl(' + this.hue + '%, 100%, ' + this.lightness + '%)';
     var color = tinycolor(color_s).toRgb();
     this.material.color = new THREE.Color(color.r / 255, color.g / 255, color.b / 255);
 
-    this.rotation -= 0.005 + Math.max(0, (bass - 0.5)) * 0.15;
+    this.rotation -= 0.005 + Math.max(0, (snare - 0.5)) * 0.15;
     this.lightRotation += 0.15;
     //this.origin.x += 10;
     var radius = 600 + Math.sin(t / 1000 * Math.PI * 1 / 4) * 100;
@@ -95,5 +95,5 @@ Scene4.prototype.update = function(dt, t) {
     this.light.x = this.origin.x + radius * Math.cos( this.lightRotation );
     this.light.y = this.origin.y + radius * Math.sin( this.lightRotation );
 
-    this.hblur.uniforms[ 'h' ].value = Math.max(0, (bass - 0.5)) * 2 / 256;
+    this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 2 / 256;
 };

@@ -12,6 +12,8 @@ var fftResult;
 //var fftTempResult;
 var bass = 0;
 var _bass = 0;
+var snare = 0;
+var _snare = 0;
 
 var numScenes = 5; // number of scenes
 var scenes = []; // list of all scenes
@@ -121,6 +123,12 @@ var fft = function() {
     _bass = Math.min(100, Math.max(0, fftResult[bassBand] + 100) * 1.5) / 100;
     _bass = Math.exp(_bass) / Math.E;
     bass = bass * fftAvg + _bass * (1 - fftAvg);
+
+    var snareBand = 40;
+
+    _snare = Math.min(100, Math.max(0, fftResult[snareBand] + 100) * 1.5) / 100;
+    _snare = Math.exp(_snare) / Math.E;
+    snare = snare * fftAvg + _snare * (1 - fftAvg);
 };
 
 var prevFrame = 0;
