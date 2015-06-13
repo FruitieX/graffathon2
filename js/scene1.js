@@ -32,6 +32,7 @@ Scene1.prototype.init = function() {
     directionalLight.position.set( 2, 2, 2 );
     curThreeScene.add(directionalLight);
 
+    // Add point lightning
     var pointLight = new THREE.PointLight( 0xffffff, 1, 20 );
     pointLight.position.set( 0, -5, 0 );
     curThreeScene.add(pointLight);
@@ -42,24 +43,32 @@ Scene1.prototype.deinit = function() {
 
 Scene1.prototype.update = function(dt) {
 
-    // Increment camera angle
-    this.cameraAngle += this.speed;
+    this.speed = 0.02 * bass;
+
+    curThreeScene.children[4].color = new THREE.Color(bass, bass, bass);
+
+    // Increment camera angle [0,2PI]
+    this.cameraAngle += 0.01;
     if (this.cameraAngle > Math.PI * 2)
         this.cameraAngle = 0;
+
+    // Camera spin around origin
     camera.position.x = Math.cos(this.cameraAngle) * this.cameraDistance;
     camera.position.z = Math.sin(this.cameraAngle) * this.cameraDistance;
     camera.up = new THREE.Vector3(0,1,0);
     camera.lookAt( new THREE.Vector3(0, 0, 0) );
 
+    // Camera wobble
     if (this.cameraAngle >= Math.PI)
-        camera.position.y -= this.speed;
+        camera.position.y -= 0.01;
     else
-        camera.position.y += this.speed;
+        camera.position.y += 0.01;
 
-    this.obj.rotation.x += 0.01;
-    this.obj.rotation.y += 0.08;
+    // Rotate and scale object
+    this.obj.rotation.x += this.speed;
+    this.obj.rotation.y += this.speed * 8;
 
-    this.obj.scale.x = 1 + Math.max(0, (bass));
+    this.obj.scale.x = 0.5 + Math.max(0, (bass));
     this.obj.scale.y = this.obj.scale.x;
     this.obj.scale.z = this.obj.scale.x;
 };
