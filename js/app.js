@@ -9,6 +9,9 @@ var composer;
 var debugMode = false;
 var bpm = 172;
 
+// time between bars ( = 4 beats)
+var barCycle = 1000 / (bpm / 60) * 4;
+
 var audio;
 var audioCtx;
 var analyser;

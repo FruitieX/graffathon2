@@ -7,7 +7,7 @@ function Scene3() {
         color: Math.random() * 0x808080,
         map: this.map
     });
-    this._sceneTime = 5000; // scene active time in ms
+    this._sceneTime = barCycle * 16; // scene active time in ms
     this.group = new THREE.Group();
     this.hue = 0;
 

@@ -11,7 +11,7 @@ function Scene1() {
     this.plane.receiveShadow = true;
     this.plane.scale.x = 10;
     this.plane.scale.z = 10;
-    this._sceneTime = 10000; // scene active time in ms
+    this._sceneTime = barCycle * 16; // scene active time in ms
     this.hue1 = 0;
     this.hue2 = 180;
 };
@@ -78,7 +78,7 @@ Scene1.prototype.update = function(dt, t) {
     this.hue2 = (this.hue2 + bass * 1) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
 
-    var cycle = 1000 / (bpm / 60) * 2;
+    var cycle = barCycle / 2;
     this.obj.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
 
     var lightness1 = Math.min(100, Math.max(0, Math.pow((2 * (t % cycle) - cycle) / 1000, 4) * 200));

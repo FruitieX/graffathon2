@@ -9,7 +9,7 @@ function Scene4() {
         map: this.map
     });
     this.hue = 0;
-    this._sceneTime = 5000; // scene active time in ms
+    this._sceneTime = barCycle * 16; // scene active time in ms
 
     this.object = new THREE.Object3D();
 
