@@ -38,7 +38,7 @@ Scene1.prototype.init = function() {
     */
 
     // Add directional lightning
-    this.directionalLight = new THREE.DirectionalLight( 0x00dddd, 0.25 );
+    this.directionalLight = new THREE.DirectionalLight( 0x00ffff, 0.25 );
     this.directionalLight.castShadow = true;
     this.directionalLight.shadowMapWidth = 2048;
     this.directionalLight.shadowMapHeight = 2048;
