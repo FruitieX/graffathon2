@@ -17,7 +17,6 @@ function Scene15() {
     this.plane.receiveShadow = true;
     this.plane.scale.x = 10;
     this.plane.scale.z = 10;
-    this._sceneTime = barCycle * 8; // scene active time in ms
     this.hue1 = 0;
     this.hue2 = 180;
 };

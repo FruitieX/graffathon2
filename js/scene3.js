@@ -13,8 +13,6 @@ function Scene3() {
         this.d2x.push(new THREE.Vector3(0,0,0));
         this.m.push(0.1 + Math.random() * 0.9);
     }
-
-    this._sceneTime = barCycle * 8; // scene active time in ms
 };
 
 Scene3.prototype.init = function() {
