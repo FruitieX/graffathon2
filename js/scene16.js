@@ -63,6 +63,14 @@ Scene16.prototype.init = function() {
 
     curThreeScene.add(this.particles);
     curThreeScene.add(this.plane);
+
+    // postprocessing
+    composer = new THREE.EffectComposer( renderer );
+    composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
+
+    this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
+    composer.addPass(this.hblur);
+    this.hblur.renderToScreen = true;
 };
 
 Scene16.prototype.deinit = function() {
@@ -133,4 +141,6 @@ Scene16.prototype.update = function(dt, t) {
     this.uniforms.bass.value = bass;
     this.uniforms.lightPos.value = new THREE.Vector3(color2.r / 255, color2.g / 255, color2.b / 255);
     var timeMod = time % 2000;
+
+    this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 3 / 360;
 };
