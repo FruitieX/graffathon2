@@ -49,7 +49,7 @@ var sceneOrder = [
     {num: 14, sceneTime: barCycle * 8},
     {num: 15, sceneTime: barCycle * 8},
     {num: 16, sceneTime: barCycle * 8},
-    {num: 17, sceneTime: barCycle * 16},
+    {num: 17, sceneTime: barCycle * 32},
     {num: 18, sceneTime: barCycle * 8}
 ];
 
