@@ -15,8 +15,8 @@ Scene18.prototype.deinit = function() {
 Scene18.prototype.update = function(dt, t) {
 
     canvasCtx.font = '100px helvetiker';
-    canvasCtx.fillStyle = '0xffffff';
-    canvasCtx.strokeStyle = '0xffffff';
+    canvasCtx.fillStyle = '#ffffff';
+    canvasCtx.strokeStyle = '#ffffff';
     canvasCtx.lineWidth = 4;
 
     canvasCtx.fillText('graffathon 2015', width / 4, height / 2);

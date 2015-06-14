@@ -27,25 +27,34 @@ function Scene17() {
     }
 
     this.credits = [
+        '',
         'get rekt',
         '',
-        'gfx by:',
+        '',
+        '',
+        'GFX',
         'atte',
         'FruitieX',
         'remedi',
         '',
-        'music by: FruitieX',
         '',
-        'tools used:',
-        'hipster programming languages',
+        'MUSIC',
+        'FruitieX',
+        '',
+        '',
+        'TOOLS',
         'three.js',
-        'lots of HYPE',
+        'hype',
         'vim',
-        'git',
         '',
-        'greetings to:',
+        '',
+        'GREETINGS',
         'peisik',
-        'everyone at graffathon!'
+        'urs',
+        'sooda',
+        'everyone at graffathon!',
+        '',
+        ''
     ];
 };
 
@@ -125,9 +134,11 @@ Scene17.prototype.update = function(dt, t) {
     canvasCtx.strokeStyle = 'black';
     canvasCtx.lineWidth = 4;
 
-    _.each(this.credits, function(line) {
+    _.each(this.credits, function(line, index) {
+        var w = canvasCtx.measureText(line).width;
+        var pos = height + index * 100 - (t - sceneStartTime) / 16;
+        canvasCtx.fillText(line, width / 2 - w / 2, pos);
+        canvasCtx.strokeText(line, width / 2 - w/ 2, pos);
     });
-    canvasCtx.fillText('Hello World', width / 2, height / 2);
-    canvasCtx.strokeText('Hello World', width / 2, height / 2);
     canvas.style['background-color'] = 'rgba(255, 255, 255, 0.2)';
 };

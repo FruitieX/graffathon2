@@ -28,6 +28,7 @@ var _bass = 0;
 var snare = 0;
 var _snare = 0;
 
+var sceneStartTime = 0;
 var scenes = []; // list of all scenes
 
 var sceneOrder = [
@@ -48,7 +49,7 @@ var sceneOrder = [
     {num: 14, sceneTime: barCycle * 8},
     {num: 15, sceneTime: barCycle * 8},
     {num: 16, sceneTime: barCycle * 8},
-    {num: 17, sceneTime: barCycle * 8},
+    {num: 17, sceneTime: barCycle * 32},
     {num: 18, sceneTime: barCycle * 8}
 ];
 
@@ -156,7 +157,7 @@ var changeScene = function(num) {
 
     var newScene = scenes[sceneOrder[curScene].num];
     newScene.init();
-    newScene._startTime = curTime;
+    sceneStartTime = curTime;
     console.log('scene changed to ' + num);
 };
 
