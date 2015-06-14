@@ -44,7 +44,7 @@ var initRenderer = function() {
     composer = null;
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.innerHTML = '';
+    //document.body.innerHTML = '';
     document.body.appendChild(renderer.domElement);
 
     function onWindowResize() {
