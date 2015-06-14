@@ -49,11 +49,11 @@
                 vec2 screencoord = vec2(screen_x, screen_y);
 
                 vec2 lightxy = lightPos.xy;
-                float lightdist = length(lightxy - screencoord);
+                float lightdist = length(screencoord);
                 lightdist = 1.0 / lightdist*lightdist*lightdist*lightdist;
                 //lightdist = floor(lightdist * 18.0) / 18.0;
 
-                gl_FragColor = vec4(lightdist * bass, 0, 0,1);
+                gl_FragColor = vec4(lightPos*lightdist, 1);
             }
         </script>
     </body>
