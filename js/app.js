@@ -26,8 +26,29 @@ var _bass = 0;
 var snare = 0;
 var _snare = 0;
 
-var numScenes = 18; // number of scenes
 var scenes = []; // list of all scenes
+
+var sceneOrder = [
+    {num: 0, sceneTime: barCycle * 8},
+    {num: 1, sceneTime: barCycle * 8},
+    {num: 2, sceneTime: barCycle * 8},
+    {num: 3, sceneTime: barCycle * 8},
+    {num: 4, sceneTime: barCycle * 8},
+    {num: 5, sceneTime: barCycle * 8},
+    {num: 6, sceneTime: barCycle * 8},
+    {num: 7, sceneTime: barCycle * 8},
+    {num: 8, sceneTime: barCycle * 8},
+    {num: 9, sceneTime: barCycle * 4},
+    {num: 10, sceneTime: barCycle * 4},
+    {num: 11, sceneTime: barCycle * 4},
+    {num: 12, sceneTime: barCycle * 4},
+    {num: 13, sceneTime: barCycle * 8},
+    {num: 14, sceneTime: barCycle * 8},
+    {num: 15, sceneTime: barCycle * 8},
+    {num: 16, sceneTime: barCycle * 8},
+    {num: 17, sceneTime: barCycle * 8}
+];
+
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
 var curScene = -1;
 var curThreeScene = null;
@@ -80,7 +101,7 @@ var init = function() {
 
     initRenderer();
 
-    for (var i = 0; i < numScenes; i++) {
+    for (var i = 0; i < sceneOrder.length; i++) {
         console.log('loading scene: ' + i);
         scenes.push(new window['Scene' + i]());
     }
@@ -102,32 +123,39 @@ var init = function() {
 
 var changeScene = function(num) {
     // check that scene exists
-    if (num > numScenes - 1) {
+    if (num > sceneOrder.length - 1) {
         return;
     }
 
     // deinit old scene
-    if (scenes[curScene]) {
-        scenes[curScene].deinit();
-        scenesElapsedTime += scenes[curScene]._sceneTime;
+    if (curScene !== -1) {
+        var oldScene = scenes[sceneOrder[curScene].num];
+        oldScene.deinit();
+        scenesElapsedTime += sceneOrder[curScene].sceneTime;
     }
     composer = null;
 
     // init next scene
     curScene = num;
-    scenes[curScene].init();
-    scenes[curScene]._startTime = curTime;
+
+    var newScene = scenes[sceneOrder[curScene].num];
+    newScene.init();
+    newScene._startTime = curTime;
     console.log('scene changed to ' + num);
 };
 
 var shouldChangeScene = function() {
     // debug mode on or are we at the last scene?
-    if (debugMode || curScene === numScenes - 1) {
-        return false
+    if (debugMode) {
+        return false;
+    }
+    if (curScene === sceneOrder.length - 1) {
+        console.info('end of demo');
+        return false;
     }
 
     // has enough time passed?
-    if (curTime > scenesElapsedTime + scenes[curScene]._sceneTime) {
+    if (curTime > scenesElapsedTime + sceneOrder[curScene].sceneTime) {
         return true;
     }
 
