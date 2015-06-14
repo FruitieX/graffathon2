@@ -17,7 +17,7 @@ function Scene16() {
 
 Scene16.prototype.init = function() {
     this.hue1 = 0;
-    this.hue2 = 180;
+    this.hue2 = 0;
     camera = new THREE.PerspectiveCamera( 85, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
     this.map = THREE.ImageUtils.loadTexture('isoparticle.png');
@@ -67,6 +67,10 @@ Scene16.prototype.init = function() {
     // postprocessing
     composer = new THREE.EffectComposer( renderer );
     composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
+
+    this.rgbeffect = new THREE.ShaderPass( THREE.RGBShiftShader );
+    this.rgbeffect.uniforms[ 'amount' ].value = 0.002;
+    composer.addPass( this.rgbeffect );
 
     this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
     composer.addPass(this.hblur);
@@ -142,5 +146,5 @@ Scene16.prototype.update = function(dt, t) {
     this.uniforms.lightPos.value = new THREE.Vector3(color2.r / 255, color2.g / 255, color2.b / 255);
     var timeMod = time % 2000;
 
-    this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 3 / 360;
+    this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 3 / 512;
 };
