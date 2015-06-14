@@ -53,6 +53,18 @@ Scene3.prototype.init = function() {
 
     curThreeScene.add(this.particles);
     //curThreeScene.add(this.plane);
+
+    // postprocessing
+    composer = new THREE.EffectComposer( renderer );
+    composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
+
+    this.rgbeffect = new THREE.ShaderPass( THREE.RGBShiftShader );
+    this.rgbeffect.uniforms[ 'amount' ].value = 0.001;
+    composer.addPass( this.rgbeffect );
+
+    this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
+    this.hblur.renderToScreen = true;
+    composer.addPass( this.hblur );
 };
 
 Scene3.prototype.deinit = function() {
@@ -60,6 +72,8 @@ Scene3.prototype.deinit = function() {
 };
 
 Scene3.prototype.update = function(dt, t) {
+
+    this.hblur.uniforms[ 'h' ].value = 0.0005 + Math.max(0, (snare - 0.5)) / 512;
     //this.particles.rotateOnAxis(new THREE.Vector3(1, 1, 0), 0.01);
     dt = dt;
     var time = audio.currentTime * 1000;
