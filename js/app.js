@@ -128,7 +128,7 @@ var init = function() {
     _.each(sceneOrder, function(scene) {
         numScenes = Math.max(numScenes, scene.num);
     });
-    for (var i = 0; i < numScenes; i++) {
+    for (var i = 0; i <= numScenes; i++) {
         console.log('loading scene: ' + i);
         scenes.push(new window['Scene' + i]());
     }
