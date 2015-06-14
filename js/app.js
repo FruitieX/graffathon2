@@ -5,6 +5,8 @@
 var camera;
 var renderer;
 var composer;
+var canvas;
+var canvasCtx;
 
 var width = window.innerWidth;
 var height = window.innerHeight;
@@ -26,6 +28,7 @@ var _bass = 0;
 var snare = 0;
 var _snare = 0;
 
+var sceneStartTime = 0;
 var scenes = []; // list of all scenes
 
 var sceneOrder = [
@@ -38,15 +41,22 @@ var sceneOrder = [
     {num: 6, sceneTime: barCycle * 8},
     {num: 7, sceneTime: barCycle * 8},
     {num: 8, sceneTime: barCycle * 8},
+    {num: 14, sceneTime: barCycle * 2},
+    {num: 6, sceneTime: barCycle * 1},
+    {num: 14, sceneTime: barCycle * 1},
+    {num: 6, sceneTime: barCycle * 1},
+    {num: 14, sceneTime: barCycle * 0.5},
+    {num: 6, sceneTime: barCycle * 0.5},
+    {num: 14, sceneTime: barCycle * 2},
     {num: 9, sceneTime: barCycle * 4},
     {num: 10, sceneTime: barCycle * 4},
     {num: 11, sceneTime: barCycle * 4},
     {num: 12, sceneTime: barCycle * 4},
     {num: 13, sceneTime: barCycle * 8},
-    {num: 14, sceneTime: barCycle * 8},
     {num: 15, sceneTime: barCycle * 8},
     {num: 16, sceneTime: barCycle * 8},
-    {num: 17, sceneTime: barCycle * 8}
+    {num: 17, sceneTime: barCycle * 32},
+    {num: 18, sceneTime: barCycle * 8}
 ];
 
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
@@ -65,14 +75,27 @@ var initRenderer = function() {
     composer = null;
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    //document.body.innerHTML = '';
+    renderer.domElement.style.position = 'absolute';
     document.body.appendChild(renderer.domElement);
 
+    canvas = document.createElement('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.position = 'absolute';
+    canvas.style['z-index'] = 9999;
+    canvasCtx = canvas.getContext('2d');
+    document.body.appendChild(canvas);
+
     function onWindowResize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
 
         renderer.setSize(window.innerWidth, window.innerHeight);
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
     window.removeEventListener('resize', onWindowResize, false);
     window.addEventListener('resize', onWindowResize, false);
@@ -101,7 +124,11 @@ var init = function() {
 
     initRenderer();
 
-    for (var i = 0; i < sceneOrder.length; i++) {
+    var numScenes = 0;
+    _.each(sceneOrder, function(scene) {
+        numScenes = Math.max(numScenes, scene.num);
+    });
+    for (var i = 0; i <= numScenes; i++) {
         console.log('loading scene: ' + i);
         scenes.push(new window['Scene' + i]());
     }
@@ -140,8 +167,8 @@ var changeScene = function(num) {
 
     var newScene = scenes[sceneOrder[curScene].num];
     newScene.init();
-    newScene._startTime = curTime;
-    console.log('scene changed to ' + num);
+    sceneStartTime = curTime;
+    console.log('scene changed to: ' + num + ' (' + sceneOrder[curScene].num + ') at time: ' + curTime);
 };
 
 var shouldChangeScene = function() {
@@ -193,7 +220,8 @@ var render = function() {
         changeScene(curScene + 1);
     }
 
-    scenes[curScene].update(curTime - prevFrame, curTime);
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    scenes[sceneOrder[curScene].num].update(curTime - prevFrame, curTime);
     prevFrame= curTime;
 
     if (composer) {

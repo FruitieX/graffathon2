@@ -25,6 +25,37 @@ function Scene17() {
         this.object.add( mesh );
 
     }
+
+    this.credits = [
+        '',
+        'get rekt',
+        '',
+        '',
+        '',
+        'GFX',
+        'atte',
+        'FruitieX',
+        'remedi',
+        '',
+        '',
+        'MUSIC',
+        'FruitieX',
+        '',
+        '',
+        'TOOLS',
+        'three.js',
+        'hype',
+        'vim',
+        '',
+        '',
+        'GREETINGS',
+        'peisik',
+        'urs',
+        'sooda',
+        'everyone at graffathon!',
+        '',
+        ''
+    ];
 };
 
 Scene17.prototype.init = function() {
@@ -40,7 +71,7 @@ Scene17.prototype.init = function() {
     this.light.position.set( 1, 1, 1 );
     curThreeScene.add( this.light );
 
-    var ambientLight = new THREE.AmbientLight(0x444444);
+    var ambientLight = new THREE.AmbientLight(0x999999);
     curThreeScene.add(ambientLight);
 
     // postprocessing
@@ -73,6 +104,7 @@ Scene17.prototype.init = function() {
 
 Scene17.prototype.deinit = function() {
     renderer.setClearColor(0x000000, 1);
+    canvas.style['background-color'] = 'rgba(255, 255, 255, 0.0)';
 };
 
 Scene17.prototype.update = function(dt, t) {
@@ -96,4 +128,17 @@ Scene17.prototype.update = function(dt, t) {
     this.light.y = this.origin.y + radius * Math.sin( this.lightRotation );
 
     //this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 3 / 512;
+
+    canvasCtx.font = '100px helvetiker';
+    canvasCtx.fillStyle = 'white';
+    canvasCtx.strokeStyle = 'black';
+    canvasCtx.lineWidth = 4;
+
+    _.each(this.credits, function(line, index) {
+        var w = canvasCtx.measureText(line).width;
+        var pos = height + index * 100 - (t - sceneStartTime) / 16;
+        canvasCtx.fillText(line, width / 2 - w / 2, pos);
+        canvasCtx.strokeText(line, width / 2 - w/ 2, pos);
+    });
+    canvas.style['background-color'] = 'rgba(255, 255, 255, 0.0)';
 };
