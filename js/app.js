@@ -48,7 +48,8 @@ var sceneOrder = [
     {num: 14, sceneTime: barCycle * 8},
     {num: 15, sceneTime: barCycle * 8},
     {num: 16, sceneTime: barCycle * 8},
-    {num: 17, sceneTime: barCycle * 8}
+    {num: 17, sceneTime: barCycle * 8},
+    {num: 18, sceneTime: barCycle * 8}
 ];
 
 var scenesElapsedTime = 0; // added to after each scene change, time since start of demo
@@ -68,7 +69,6 @@ var initRenderer = function() {
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.domElement.style.position = 'absolute';
-    document.body.innerHTML = '';
     document.body.appendChild(renderer.domElement);
 
     canvas = document.createElement('canvas');

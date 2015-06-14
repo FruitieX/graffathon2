@@ -1,4 +1,4 @@
-function Scene17() {
+function Scene18() {
     this.map = THREE.ImageUtils.loadTexture('particle.png');
     this.map.minFilter = THREE.LinearFilter;
     this.rotation = 0;
@@ -25,31 +25,9 @@ function Scene17() {
         this.object.add( mesh );
 
     }
-
-    this.credits = [
-        'get rekt',
-        '',
-        'gfx by:',
-        'atte',
-        'FruitieX',
-        'remedi',
-        '',
-        'music by: FruitieX',
-        '',
-        'tools used:',
-        'hipster programming languages',
-        'three.js',
-        'lots of HYPE',
-        'vim',
-        'git',
-        '',
-        'greetings to:',
-        'peisik',
-        'everyone at graffathon!'
-    ];
 };
 
-Scene17.prototype.init = function() {
+Scene18.prototype.init = function() {
     camera = new THREE.PerspectiveCamera( 90, window.innerWidth/window.innerHeight, 0.1, 3000 );
     curThreeScene = new THREE.Scene();
     camera.position.z = 100;
@@ -91,14 +69,16 @@ Scene17.prototype.init = function() {
     vignette.uniforms['offset'].value = 1.0;
     vignette.renderToScreen = true;
     composer.addPass(vignette);
+
+    canvas.style['background-color'] = 'rgba(0, 0, 0, 1.0)';
 };
 
-Scene17.prototype.deinit = function() {
+Scene18.prototype.deinit = function() {
     renderer.setClearColor(0x000000, 1);
     canvas.style['background-color'] = 'rgba(255, 255, 255, 0.0)';
 };
 
-Scene17.prototype.update = function(dt, t) {
+Scene18.prototype.update = function(dt, t) {
     this.hue = (this.hue + bass * 1) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
     var color_s = 'hsl(' + this.hue + '%, 100%, ' + this.lightness + '%)';
@@ -121,13 +101,10 @@ Scene17.prototype.update = function(dt, t) {
     //this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 3 / 512;
 
     canvasCtx.font = '100px helvetiker';
-    canvasCtx.fillStyle = 'white';
-    canvasCtx.strokeStyle = 'black';
+    canvasCtx.fillStyle = 'black';
+    canvasCtx.strokeStyle = 'white';
     canvasCtx.lineWidth = 4;
 
-    _.each(this.credits, function(line) {
-    });
-    canvasCtx.fillText('Hello World', width / 2, height / 2);
-    canvasCtx.strokeText('Hello World', width / 2, height / 2);
-    canvas.style['background-color'] = 'rgba(255, 255, 255, 0.2)';
+    canvasCtx.fillText('graffathon 2015', width / 2, height / 2);
+    canvasCtx.strokeText('graffathon 2015', width / 2, height / 2);
 };
