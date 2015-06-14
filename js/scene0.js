@@ -140,7 +140,6 @@ Scene0.prototype.update = function(dt, t) {
     else {
         this.beat = false;
     }
-    console.log(this.beat);
 
     // Camera spin around origin + bass
     camera.position.x = Math.cos(this.cameraAngle) * this.cameraDistance * (0.5 + 0.5* bass);

@@ -21,6 +21,5 @@ Scene18.prototype.update = function(dt, t) {
 
     canvasCtx.fillText('graffathon 2015', width / 4, height / 2);
     canvasCtx.strokeText('graffathon 2015', width / 4, height / 2);
-
     
 };
