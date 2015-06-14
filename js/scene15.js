@@ -1,5 +1,4 @@
-function Scene2() {
-
+function Scene15() {
     var geometry = new THREE.IcosahedronGeometry(3, 0);
     var material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 1, shading: THREE.FlatShading} );
     this.obj1 = new THREE.Mesh( geometry, material );
@@ -23,7 +22,7 @@ function Scene2() {
     this.hue2 = 180;
 };
 
-Scene2.prototype.init = function() {
+Scene15.prototype.init = function() {
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
     // Init variables
@@ -47,7 +46,7 @@ Scene2.prototype.init = function() {
     */
 
     // Add directional lightning
-    this.directionalLight = new THREE.DirectionalLight( 0xdd00dd, 0.33 );
+    this.directionalLight = new THREE.DirectionalLight( 0xdd00dd, 1 );
     this.directionalLight.castShadow = true;
     this.directionalLight.shadowMapWidth = 2048;
     this.directionalLight.shadowMapHeight = 2048;
@@ -55,7 +54,7 @@ Scene2.prototype.init = function() {
     curThreeScene.add(this.directionalLight);
 
     // Add point lightning
-    this.pointLight = new THREE.PointLight( 0xffffff, 1, 300 );
+    this.pointLight = new THREE.PointLight( 0xffffff, 1, 1000 );
     this.pointLight.position.set( 0, -5, 0 );
     curThreeScene.add(this.pointLight);
 
@@ -67,9 +66,22 @@ Scene2.prototype.init = function() {
     composer = new THREE.EffectComposer( renderer );
     composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
 
+    var dotvignette = new THREE.ShaderPass( THREE.VignetteShader );
+    dotvignette.uniforms['darkness'].value = 0.75;
+    dotvignette.uniforms['offset'].value = 1.0;
+    composer.addPass(dotvignette);
+
+    var effect = new THREE.ShaderPass( THREE.DotScreenShader );
+    effect.uniforms[ 'scale' ].value = 32;
+    effect.uniforms[ 'tSize' ].value = new THREE.Vector2( 32, 32 );
+    composer.addPass( effect );
+
     this.rgbeffect = new THREE.ShaderPass( THREE.RGBShiftShader );
     this.rgbeffect.uniforms[ 'amount' ].value = 0.0015;
     composer.addPass( this.rgbeffect );
+
+    this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
+    composer.addPass(this.hblur);
 
     var vignette = new THREE.ShaderPass( THREE.VignetteShader );
     vignette.uniforms['darkness'].value = 1.0;
@@ -78,11 +90,11 @@ Scene2.prototype.init = function() {
     composer.addPass(vignette);
 };
 
-Scene2.prototype.deinit = function() {
+Scene15.prototype.deinit = function() {
     renderer.shadowMapEnabled = false;
 };
 
-Scene2.prototype.update = function(dt, t) {
+Scene15.prototype.update = function(dt, t) {
     this.hue1 = (this.hue1 + bass * 1) % 360;
     this.hue2 = (this.hue2 + bass * 1) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
@@ -92,7 +104,7 @@ Scene2.prototype.update = function(dt, t) {
     this.obj2.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
     this.obj3.position.y = Math.pow((2 * (t % cycle) - cycle) / 1000, 2) * -10;
 
-    var lightness1 = Math.min(100, Math.max(0, Math.pow((2 * (t % cycle) - cycle) / 1000, 4) * 200));
+    var lightness1 = Math.min(100, Math.max(0, Math.pow((2 * (t % cycle) - cycle) / 1000, 4) * 300));
 
     var color_s1 = 'hsl(' + this.hue1 + '%, 100%, ' + lightness1 + '%)';
     var color1 = tinycolor(color_s1).toRgb();
@@ -140,4 +152,11 @@ Scene2.prototype.update = function(dt, t) {
     this.obj3.rotation.x += this.speed * 0.1 * dt;
     this.obj3.rotation.y += this.speed * 8 * 0.1 * dt;
     this.obj3.scale.x = this.obj3.scale.y = this.obj3.scale.z = 0.25 + Math.max(0, (bass * 1.25));
+
+    cycle *= 2;
+    var rgbAmount = Math.pow((2 * (t % cycle) - cycle) / 1000, 6);
+    rgbAmount = Math.pow(rgbAmount, 3);
+    rgbAmount *= 0.00025;
+    this.rgbeffect.uniforms[ 'amount' ].value = 0.001 + rgbAmount + snare * 0.002;
+    this.hblur.uniforms[ 'h' ].value = Math.max(0, rgbAmount * 10) * 2 / 256;
 };

@@ -1,5 +1,4 @@
-function Scene2() {
-
+function Scene11() {
     var geometry = new THREE.IcosahedronGeometry(3, 0);
     var material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 1, shading: THREE.FlatShading} );
     this.obj1 = new THREE.Mesh( geometry, material );
@@ -18,12 +17,12 @@ function Scene2() {
     this.plane.receiveShadow = true;
     this.plane.scale.x = 10;
     this.plane.scale.z = 10;
-    this._sceneTime = barCycle * 8; // scene active time in ms
+    this._sceneTime = barCycle * 4; // scene active time in ms
     this.hue1 = 0;
     this.hue2 = 180;
 };
 
-Scene2.prototype.init = function() {
+Scene11.prototype.init = function() {
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
     // Init variables
@@ -41,13 +40,11 @@ Scene2.prototype.init = function() {
     curThreeScene.add(this.plane);
 
     // Add ambient lighting
-    /*
-    var ambientLight = new THREE.AmbientLight(0x111122);
-    curThreeScene.add(ambientLight);
-    */
+    this.ambientLight = new THREE.AmbientLight(0x111122);
+    curThreeScene.add(this.ambientLight);
 
     // Add directional lightning
-    this.directionalLight = new THREE.DirectionalLight( 0xdd00dd, 0.33 );
+    this.directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
     this.directionalLight.castShadow = true;
     this.directionalLight.shadowMapWidth = 2048;
     this.directionalLight.shadowMapHeight = 2048;
@@ -67,6 +64,10 @@ Scene2.prototype.init = function() {
     composer = new THREE.EffectComposer( renderer );
     composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
 
+    var kaleido = new THREE.ShaderPass( THREE.KaleidoShader );
+    kaleido.uniforms['sides'].value = 8;
+    composer.addPass( kaleido );
+
     this.rgbeffect = new THREE.ShaderPass( THREE.RGBShiftShader );
     this.rgbeffect.uniforms[ 'amount' ].value = 0.0015;
     composer.addPass( this.rgbeffect );
@@ -78,11 +79,11 @@ Scene2.prototype.init = function() {
     composer.addPass(vignette);
 };
 
-Scene2.prototype.deinit = function() {
+Scene11.prototype.deinit = function() {
     renderer.shadowMapEnabled = false;
 };
 
-Scene2.prototype.update = function(dt, t) {
+Scene11.prototype.update = function(dt, t) {
     this.hue1 = (this.hue1 + bass * 1) % 360;
     this.hue2 = (this.hue2 + bass * 1) % 360;
     this.lightness = Math.max(50, (bass - 0.5) * 100);
@@ -100,14 +101,15 @@ Scene2.prototype.update = function(dt, t) {
 
     var color_s2 = 'hsl(' + this.hue2 + '%, 100%, ' + this.lightness + '%)';
     var color2 = tinycolor(color_s2).toRgb();
-    //this.directionalLight.color = new THREE.Color(color2.r / 255, color2.g / 255, color2.b / 255);
+    this.directionalLight.color = new THREE.Color(color2.r / 255, color2.g / 255, color2.b / 255);
+    this.ambientLight.color = new THREE.Color(color2.r / 512, color2.g / 512, color2.b / 512);
 
-    this.speed = 0.02 * bass;
+    this.speed = 0.005 * bass;
 
     //curThreeScene.children[4].color = new THREE.Color(bass, bass, bass);
 
     // Increment camera angle [0,2PI]
-    this.cameraAngle += 0.00025 * dt % Math.PI * 2;
+    this.cameraAngle += 0.000025 * dt % Math.PI * 2;
     /*
     if (this.cameraAngle > Math.PI * 2)
         this.cameraAngle = 0;
@@ -126,18 +128,18 @@ Scene2.prototype.update = function(dt, t) {
     else
         camera.position.y += 0.01;
     */
-    camera.position.y = 7 + Math.sin(t / 1000) * 1;
+    camera.position.y = 8 + Math.sin(t / 1000) * 1;
 
     // Rotate and scale object
     this.obj1.rotation.x += this.speed * 0.1 * dt;
     this.obj1.rotation.y += this.speed * 8 * 0.1 * dt;
-    this.obj1.scale.x = this.obj1.scale.y = this.obj1.scale.z = 0.25 + Math.max(0, (bass * 1.25));
+    this.obj1.scale.x = this.obj1.scale.y = this.obj1.scale.z = 0.25 + Math.max(0, (bass * 1.5));
 
     this.obj2.rotation.x += this.speed * 0.1 * dt;
     this.obj2.rotation.y += this.speed * 8 * 0.1 * dt;
-    this.obj2.scale.x = this.obj2.scale.y = this.obj2.scale.z = 0.25 + Math.max(0, (bass * 1.25));
+    this.obj2.scale.x = this.obj2.scale.y = this.obj2.scale.z = 0.25 + Math.max(0, (bass * 1.5));
 
     this.obj3.rotation.x += this.speed * 0.1 * dt;
     this.obj3.rotation.y += this.speed * 8 * 0.1 * dt;
-    this.obj3.scale.x = this.obj3.scale.y = this.obj3.scale.z = 0.25 + Math.max(0, (bass * 1.25));
+    this.obj3.scale.x = this.obj3.scale.y = this.obj3.scale.z = 0.25 + Math.max(0, (bass * 1.5));
 };
