@@ -1,115 +1,113 @@
 function Scene16() {
-    this.map = THREE.ImageUtils.loadTexture('particle.png');
-    this.map.minFilter = THREE.LinearFilter;
-    this.rotation = 0;
-    this.origin = new THREE.Vector3(0, 0, 0);
-    this.material = new THREE.SpriteMaterial({
-        color: Math.random() * 0x808080,
-        map: this.map
-    });
-    this._sceneTime = barCycle * 8; // scene active time in ms
-    this.group = new THREE.Group();
-    this.hue = 0;
-
-    for (var i = 0; i < 1024; i++) {
-        var material = new THREE.SpriteMaterial({
-            color: Math.random() * 0x808080,
-            map: this.map
-        });
-        particle = new THREE.Sprite( material );
-        particle.position.x = Math.random() * 2000 - 1000;
-        particle.position.y = Math.random() * 2000 - 1000;
-        particle.position.z = Math.random() * 2000 - 1000;
-        //particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
-        particle.scale.x = particle.scale.y = particle.scale.z = 100;
-        this.group.add( particle );
+    this.numParticles = 1024;
+    this.maxSpeed = 0.01;
+    this.gravityCenter = new THREE.Vector3(0, 0, 0);
+    this.lightpos = new THREE.Vector3(0, 0, 0);
+    this.gravityConstant = 0.000001;
+    this.dx = [];
+    this.d2x = [];
+    this.m = [];
+    this.lastBass = 0;
+    for (var i = 0; i < this.numParticles; i++) {
+        this.dx.push(new THREE.Vector3(0,0,0));
+        this.d2x.push(new THREE.Vector3(0,0,0));
+        this.m.push(0.1 + Math.random() * 0.9);
     }
-
 };
 
 Scene16.prototype.init = function() {
-    camera = new THREE.PerspectiveCamera( 90, window.innerWidth/window.innerHeight, 0.1, 3000 );
+    camera = new THREE.PerspectiveCamera( 85, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+    // Add objects
     curThreeScene = new THREE.Scene();
     camera.position.z = 70;
-    renderer.setClearColor(0xeeeeee, 1);
 
-    curThreeScene.add( this.group );
+    var particleGeometry = new THREE.Geometry();
+    for (var i = 0; i < this.numParticles; i++) {
+        particleGeometry.vertices.push(new THREE.Vector3((Math.random() - 0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100));
+        particleGeometry.colors.push(new THREE.Color(0xFFFFFF * Math.random()));// * Math.random());
+    }
+    var particleMaterial = new THREE.PointCloudMaterial({
+        size: 0.3,
+        vertexColors:THREE.VertexColors
+    });
 
-    // postprocessing
-    composer = new THREE.EffectComposer( renderer );
-    composer.addPass( new THREE.RenderPass( curThreeScene, camera ) );
+    this.particles = new THREE.PointCloud(particleGeometry, particleMaterial);
 
-    var vignette = new THREE.ShaderPass( THREE.VignetteShader );
-    vignette.uniforms['darkness'].value = 1.5;
-    vignette.uniforms['offset'].value = 1.0;
-    composer.addPass(vignette);
+    var planeGeom = new THREE.PlaneBufferGeometry(1000, 1000);
+    //var planeMaterial = new THREE.MeshBasicMaterial();
+    this.uniforms = {
+        bass: {type: "f", value: bass},
+        lightPos: {type: "v3", value: new THREE.Vector3(0,0,0)},
+        resolution: { type: "v2", value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+    };
+    this.attributes = {
+        vertexPosition: {type: "v3", values: particleGeometry.vertices},
+    }
+    var unif = this.uniforms;
+    var attrib = this.attributes;
+    var planeMaterial = new THREE.ShaderMaterial({
+        uniforms: unif,
+        attributes: attrib,
+        vertexShader: document.getElementById("scene3vs").textContent,
+        fragmentShader: document.getElementById("scene3fs").textContent,
+    });
+    this.plane = new THREE.Mesh(planeGeom, planeMaterial);
 
-    var effect = new THREE.ShaderPass( THREE.DotScreenShader );
-    effect.uniforms[ 'scale' ].value = 32;
-    effect.uniforms[ 'tSize' ].value = new THREE.Vector2( 32, 32 );
-    composer.addPass( effect );
-
-    this.colorify = new THREE.ShaderPass( THREE.ColorifyShader );
-    this.colorify.uniforms['color'].value = new THREE.Color(0.5, 0, 1);
-    composer.addPass(this.colorify);
-
-    this.rgbeffect = new THREE.ShaderPass( THREE.RGBShiftShader );
-    this.rgbeffect.uniforms[ 'amount' ].value = 0.0015;
-    //this.rgbeffect.renderToScreen = true;
-    composer.addPass( this.rgbeffect );
-
-    this.colorcorr = new THREE.ShaderPass( THREE.ColorCorrectionShader );
-    composer.addPass( this.colorcorr );
-
-    this.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader);
-    this.hblur.renderToScreen = true;
-    composer.addPass( this.hblur );
-
-    composer.render();
+    curThreeScene.add(this.particles);
+    curThreeScene.add(this.plane);
 };
 
 Scene16.prototype.deinit = function() {
-    renderer.setClearColor(0x000000, 1);
+    renderer.shadowMapEnabled = false;
 };
 
 Scene16.prototype.update = function(dt, t) {
-    var speed = bass;
-    speed = 0.005 + Math.max(0, (bass - 0.5) * 0.005);
+    //this.particles.rotateOnAxis(new THREE.Vector3(1, 1, 0), 0.01);
+    dt = dt;
+    var time = audio.currentTime * 1000;
+    //console.log(dt);
+    var is_bass = (bass > 0.85) && ((time - this.lastBass) > 100);
+    if (is_bass) {
+        this.lastBass = time;
+    }
+    for (var i = 0; i < this.numParticles; i++) {
+        this.particles.geometry.vertices[i].add(this.dx[i].clone().multiplyScalar(dt));
 
-    this.hblur.uniforms[ 'h' ].value = 0.0005 + Math.max(0, (snare - 0.5)) / 512;
+        this.dx[i].add(this.d2x[i].clone().multiplyScalar(dt));
+        if (this.dx[i].length() > this.maxSpeed){
+            this.dx[i].normalize().multiplyScalar(this.maxSpeed);
+        }
+        if (i == 0) {
+            //console.log(this.d2x[i]);
+        }
+        var diff = this.gravityCenter.clone().sub(this.particles.geometry.vertices[i]);
+        var dir = diff.clone().normalize();
+        var str = diff.length() - 10;
+        if (diff.length > 40) {
+            this.dx[i] = 0;
+        }
+        this.d2x[i] = dir.clone().multiplyScalar(this.m[i] * str * this.gravityConstant * (1- Math.random() * 0.1));
+        this.d2x[i].add(new THREE.Vector3(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).multiplyScalar(0.000001));
 
-    this.hue = (this.hue + bass * 0.01 * dt) % 360;
-    this.lightness = Math.max(50, (bass - 0.5) * 100);
-    var color_s = 'hsl(' + this.hue + '%, 100%, ' + this.lightness + '%)';
-    var color = tinycolor(color_s).toRgb();
-    this.colorify.uniforms['color'].value = new THREE.Color(color.r / 255, color.g / 255, color.b / 255);
-
-    this.rotation -= speed * 0.1 * dt;
-    this.origin.x += 10 * 0.1 * dt;
-    var radius = 500 + bass * 500;
-    camera.position.x = this.origin.x + radius * Math.cos( this.rotation );
-    camera.position.z = this.origin.y + radius * Math.sin( this.rotation );
-    camera.position.y = this.origin.z + radius * Math.sin( this.rotation );
-    camera.lookAt(this.origin);
-
-    var rgbAmount = (speed - 0.005) / 0.0025;
-    rgbAmount = Math.pow(rgbAmount, 3);
-    rgbAmount *= 0.025;
-    this.rgbeffect.uniforms[ 'amount' ].value = rgbAmount;
-
-    for (var i = 0; i < Math.round(bass * 20); i++) {
-        var material = new THREE.SpriteMaterial({
-            color: Math.random() * 0xffffff,
-            map: this.map
-        });
-        particle = new THREE.Sprite( material );
-        particle.position.x = this.origin.x + Math.random() * 2000 - 1000;
-        particle.position.y = this.origin.y + Math.random() * 2000 - 1000;
-        particle.position.z = this.origin.z + Math.random() * 2000 - 1000;
-        particle.scale.x = particle.scale.y = particle.scale.z = bass * 200;
-        this.group.add( particle );
-        this.group.children.shift();
+        if (is_bass) {
+            this.dx[i].add(dir.clone().multiplyScalar(-0.0000001 * (1/(diff.length()))));
+            this.dx[i].add(dir.clone().cross(new THREE.Vector3(0, Math.sin(time*0.1), Math.cos(time*0.2)).multiplyScalar(0.1)));
+        }
+        this.dx[i].multiplyScalar(0.99);
+        var lightstr2 = is_bass ? 0.3 : 1;
+        var lightstr = 1 / Math.pow((this.lightpos.clone().sub(this.particles.geometry.vertices[i]).length() * lightstr2 * 0.1), 2);
+        //console.log(lightstr);
+        this.particles.geometry.colors[i] = new THREE.Color(bass, 0, Math.sin(time)).multiplyScalar(lightstr);
+        this.particles.geometry.verticesNeedUpdate = true;
+        this.particles.geometry.colorsNeedUpdate = true;
     }
 
-    dt = dt;
+    //this.gravityCenter.x = Math.sin(time*0.001) * 15;
+    //this.gravityCenter.y = Math.cos(time*0.001) * 15;
+    this.particles.material.size = snare;
+    this.lightpos.x = Math.sin(time*0.003) * 20;
+    this.lightpos.z = Math.cos(time*0.003) * 20;
+    this.uniforms.bass.value = bass;
+    var timeMod = time % 2000;
 };

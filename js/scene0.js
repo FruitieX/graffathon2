@@ -48,7 +48,6 @@ function Scene0() {
     this.textMesh4 = new THREE.Mesh( textDOTted, textMaterial );
     this.textMesh5 = new THREE.Mesh( textLined, textMaterial );
     this.textMesh6 = new THREE.Mesh( textShaded, textMaterial );
-    this._sceneTime = barCycle * 8; // scene active time in ms
     this.tempSpeed = 0;
     this.index = 0;
 
@@ -78,8 +77,8 @@ Scene0.prototype.init = function() {
     this.textArray = [];
     this.textArray.push(this.textMesh5);
     this.textArray.push(this.textMesh3);
-    this.textArray.push(this.textMesh4);
     this.textArray.push(this.textMesh6);
+    this.textArray.push(this.textMesh4);
     this.textArray.push(this.textMesh2);
 
     renderer.setClearColor(0x004444, 1);

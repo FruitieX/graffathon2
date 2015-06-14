@@ -9,7 +9,6 @@ function Scene17() {
         map: this.map
     });
     this.hue = 0;
-    this._sceneTime = barCycle * 8; // scene active time in ms
 
     this.object = new THREE.Object3D();
 
@@ -26,6 +25,24 @@ function Scene17() {
         this.object.add( mesh );
 
     }
+
+    this.credits = [
+        'get rekt',
+        '',
+        'gfx by:',
+        'atte',
+        'FruitieX',
+        'remedi',
+        '',
+        'music by: FruitieX',
+        '',
+        'tools used:',
+        'hipster programming languages',
+        'three.js',
+        'lots of HYPE',
+        'vim',
+        'git'
+    ];
 };
 
 Scene17.prototype.init = function() {
@@ -41,7 +58,7 @@ Scene17.prototype.init = function() {
     this.light.position.set( 1, 1, 1 );
     curThreeScene.add( this.light );
 
-    var ambientLight = new THREE.AmbientLight(0x444444);
+    var ambientLight = new THREE.AmbientLight(0x999999);
     curThreeScene.add(ambientLight);
 
     // postprocessing
@@ -97,4 +114,12 @@ Scene17.prototype.update = function(dt, t) {
     this.light.y = this.origin.y + radius * Math.sin( this.lightRotation );
 
     //this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 3 / 512;
+
+    canvasCtx.font = '100px helvetiker';
+    canvasCtx.fillStyle = 'white';
+    canvasCtx.strokeStyle = 'black';
+    canvasCtx.lineWidth = 4;
+    canvasCtx.fillText('Hello World', width / 2, height / 2);
+    canvasCtx.strokeText('Hello World', width / 2, height / 2);
+    canvas.style['background-color'] = 'rgba(255, 255, 255, 0.2)';
 };
