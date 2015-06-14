@@ -150,7 +150,6 @@ var shouldChangeScene = function() {
         return false;
     }
     if (curScene === sceneOrder.length - 1) {
-        console.info('end of demo');
         return false;
     }
 
