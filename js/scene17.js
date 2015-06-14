@@ -140,5 +140,5 @@ Scene17.prototype.update = function(dt, t) {
         canvasCtx.fillText(line, width / 2 - w / 2, pos);
         canvasCtx.strokeText(line, width / 2 - w/ 2, pos);
     });
-    canvas.style['background-color'] = 'rgba(255, 255, 255, 0.2)';
+    canvas.style['background-color'] = 'rgba(255, 255, 255, 0.0)';
 };

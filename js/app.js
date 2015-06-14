@@ -46,7 +46,13 @@ var sceneOrder = [
     {num: 11, sceneTime: barCycle * 4},
     {num: 12, sceneTime: barCycle * 4},
     {num: 13, sceneTime: barCycle * 8},
-    {num: 14, sceneTime: barCycle * 8},
+    {num: 14, sceneTime: barCycle * 2},
+    {num: 6, sceneTime: barCycle * 1},
+    {num: 14, sceneTime: barCycle * 1},
+    {num: 6, sceneTime: barCycle * 1},
+    {num: 14, sceneTime: barCycle * 0.5},
+    {num: 6, sceneTime: barCycle * 0.5},
+    {num: 14, sceneTime: barCycle * 2},
     {num: 15, sceneTime: barCycle * 8},
     {num: 16, sceneTime: barCycle * 8},
     {num: 17, sceneTime: barCycle * 32},
@@ -118,7 +124,11 @@ var init = function() {
 
     initRenderer();
 
-    for (var i = 0; i < sceneOrder.length; i++) {
+    var numScenes = 0;
+    _.each(sceneOrder, function(scene) {
+        numScenes = Math.max(numScenes, scene.num);
+    });
+    for (var i = 0; i < numScenes; i++) {
         console.log('loading scene: ' + i);
         scenes.push(new window['Scene' + i]());
     }
@@ -158,7 +168,7 @@ var changeScene = function(num) {
     var newScene = scenes[sceneOrder[curScene].num];
     newScene.init();
     sceneStartTime = curTime;
-    console.log('scene changed to ' + num);
+    console.log('scene changed to: ' + num + ' (' + sceneOrder[curScene].num + ') at time: ' + curTime);
 };
 
 var shouldChangeScene = function() {
@@ -211,7 +221,7 @@ var render = function() {
     }
 
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    scenes[curScene].update(curTime - prevFrame, curTime);
+    scenes[sceneOrder[curScene].num].update(curTime - prevFrame, curTime);
     prevFrame= curTime;
 
     if (composer) {
