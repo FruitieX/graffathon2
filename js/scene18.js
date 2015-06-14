@@ -101,7 +101,7 @@ Scene18.prototype.update = function(dt, t) {
     //this.hblur.uniforms[ 'h' ].value = Math.max(0, (snare - 0.5)) * 3 / 512;
 
     canvasCtx.font = '100px helvetiker';
-    canvasCtx.fillStyle = 'black';
+    canvasCtx.fillStyle = '#dd00dd';
     canvasCtx.strokeStyle = 'white';
     canvasCtx.lineWidth = 4;
 
