@@ -74,7 +74,7 @@ Scene16.prototype.update = function(dt, t) {
     dt = dt;
     this.hue1 = (this.hue1 + bass * 1) % 360;
     this.hue2 = (this.hue2 + bass * 1) % 360;
-    this.lightness = 10* bass;
+    this.lightness = 7* bass;
 
     var cycle = barCycle / 2;
 
