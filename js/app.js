@@ -5,6 +5,8 @@
 var camera;
 var renderer;
 var composer;
+var canvas;
+var canvasCtx;
 
 var width = window.innerWidth;
 var height = window.innerHeight;
@@ -65,14 +67,28 @@ var initRenderer = function() {
     composer = null;
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    //document.body.innerHTML = '';
+    renderer.domElement.style.position = 'absolute';
+    document.body.innerHTML = '';
     document.body.appendChild(renderer.domElement);
 
+    canvas = document.createElement('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.position = 'absolute';
+    canvas.style['z-index'] = 9999;
+    canvasCtx = canvas.getContext('2d');
+    document.body.appendChild(canvas);
+
     function onWindowResize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
 
         renderer.setSize(window.innerWidth, window.innerHeight);
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
     window.removeEventListener('resize', onWindowResize, false);
     window.addEventListener('resize', onWindowResize, false);
@@ -193,6 +209,7 @@ var render = function() {
         changeScene(curScene + 1);
     }
 
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     scenes[curScene].update(curTime - prevFrame, curTime);
     prevFrame= curTime;
 
