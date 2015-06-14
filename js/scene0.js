@@ -24,6 +24,26 @@ function Scene0() {
         size: 10,
         height: 2
     });
+    var textSquared = new THREE.TextGeometry( 'squared', {
+        font: 'helvetiker',
+        size: 10,
+        height: 2
+    });
+    var textTriangled = new THREE.TextGeometry( 'triangled', {
+        font: 'helvetiker',
+        size: 10,
+        height: 2
+    });
+    var textPentagoned = new THREE.TextGeometry( 'pentagoned', {
+        font: 'helvetiker',
+        size: 10,
+        height: 2
+    });
+    var textHexagoned = new THREE.TextGeometry( 'hexagoned', {
+        font: 'helvetiker',
+        size: 10,
+        height: 2
+    });
     var textDOTted = new THREE.TextGeometry( 'DOTted', {
         font: 'helvetiker',
         size: 10,
@@ -41,13 +61,33 @@ function Scene0() {
         size: 10,
         height: 2
     });
-    
-    this.textMesh1 = new THREE.Mesh( textGet, textMaterial );
-    this.textMesh2 = new THREE.Mesh( textRekt, textMaterial2 );
-    this.textMesh3 = new THREE.Mesh( textCubed, textMaterial );
-    this.textMesh4 = new THREE.Mesh( textDOTted, textMaterial );
-    this.textMesh5 = new THREE.Mesh( textLined, textMaterial );
-    this.textMesh6 = new THREE.Mesh( textShaded, textMaterial );
+
+    var textTransformed = new THREE.TextGeometry( 'transformed', {
+        font: 'helvetiker',
+        size: 10,
+        height: 2
+    });
+
+    var textParticled = new THREE.TextGeometry( 'particled', {
+        font: 'helvetiker',
+        size: 10,
+        height: 2
+    });
+
+    this.textMeshes = [
+        new THREE.Mesh( textGet, textMaterial ),
+        new THREE.Mesh( textRekt, textMaterial2 ),
+        new THREE.Mesh( textCubed, textMaterial ),
+        new THREE.Mesh( textDOTted, textMaterial ),
+        new THREE.Mesh( textLined, textMaterial ),
+        new THREE.Mesh( textShaded, textMaterial ),
+        new THREE.Mesh( textSquared, textMaterial ),
+        new THREE.Mesh( textTriangled, textMaterial ),
+        new THREE.Mesh( textPentagoned, textMaterial ),
+        new THREE.Mesh( textHexagoned, textMaterial ),
+        new THREE.Mesh( textTransformed, textMaterial ),
+        new THREE.Mesh( textParticled, textMaterial ),
+    ]
     this.tempSpeed = 0;
     this.index = 0;
 
@@ -60,26 +100,30 @@ Scene0.prototype.init = function() {
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth/window.innerHeight, 0.1, 1000 );
     curThreeScene = new THREE.Scene();
     camera.position.z = 50;
-    this.textMesh1.position.x = -25;
-    curThreeScene.add(this.textMesh1);
-    curThreeScene.add(this.textMesh2);
-    curThreeScene.add(this.textMesh3);
-    curThreeScene.add(this.textMesh4);
-    curThreeScene.add(this.textMesh5);
-    curThreeScene.add(this.textMesh6);
 
-    this.textMesh2.visible = false;
-    this.textMesh3.visible = false;
-    this.textMesh4.visible = false;
-    this.textMesh5.visible = false;
-    this.textMesh6.visible = false;
+    this.textMeshes[0].position.x = -25;
+
+    _.each(this.textMeshes, function(textMesh) {
+        curThreeScene.add(textMesh);
+        textMesh.visible = false;
+    });
 
     this.textArray = [];
-    this.textArray.push(this.textMesh5);
-    this.textArray.push(this.textMesh3);
-    this.textArray.push(this.textMesh6);
-    this.textArray.push(this.textMesh4);
-    this.textArray.push(this.textMesh2);
+    this.textArray.push(this.textMeshes[2]);
+    this.textArray.push(this.textMeshes[3]);
+    this.textArray.push(this.textMeshes[4]);
+    this.textArray.push(this.textMeshes[5]);
+    this.textArray.push(this.textMeshes[6]);
+    this.textArray.push(this.textMeshes[7]);
+    this.textArray.push(this.textMeshes[8]);
+    this.textArray.push(this.textMeshes[9]);
+    this.textArray.push(this.textMeshes[10]);
+    this.textArray.push(this.textMeshes[11]);
+    this.textArray.push(this.textMeshes[5]);
+    this.textArray.push(this.textMeshes[6]);
+    this.textArray.push(this.textMeshes[7]);
+    this.textArray.push(this.textMeshes[9]);
+    this.textArray.push(this.textMeshes[1]);
 
     renderer.setClearColor(0x004444, 1);
 
@@ -121,20 +165,18 @@ Scene0.prototype.update = function(dt, t) {
 
     // Every drum beat
     if (t % (barCycle / 2) < 350)
-        this.textMesh1.visible = true;
+        this.textMeshes[0].visible = true;
     else
-        this.textMesh1.visible = false;
+        this.textMeshes[0].visible = false;
     
     if (t % (barCycle / 2) < 100) {
         if (this.beat == false) {
             this.beat = true;
-            this.textMesh2.visible = false;
-            this.textMesh3.visible = false;
-            this.textMesh4.visible = false;
-            this.textMesh5.visible = false;
-            this.textMesh6.visible = false;
+            for (var i = 1; i < this.textMeshes.length; i++) {
+                this.textMeshes[i].visible = false;
+            }
             this.textArray[this.index].visible = true;
-            this.index = (this.index + 1) % this.textArray.length;
+            this.index = Math.min(this.textArray.length - 1, (this.index + 1));
         }
     }
     else {
@@ -148,13 +190,13 @@ Scene0.prototype.update = function(dt, t) {
     camera.lookAt( new THREE.Vector3(0, 0, 0) );
 
     // Bouncy text
-    if (bass > 0.9 && this.tempSpeed == 0 && this.textMesh2.position.y <= 0)
+    if (bass > 0.9 && this.tempSpeed == 0 && this.textMeshes[1].position.y <= 0)
         this.tempSpeed = 10;
 
     if (this.tempSpeed > 0) {
-        this.textMesh2.position.y += 0.01 * this.tempSpeed;
+        this.textMeshes[1].position.y += 0.01 * this.tempSpeed;
         this.tempSpeed -= 1;
     }
-    if (this.textMesh2.position.y > 0 && this.tempSpeed == 0)
-        this.textMesh2.position.y -= 0.5;
+    if (this.textMeshes[1].position.y > 0 && this.tempSpeed == 0)
+        this.textMeshes[1].position.y -= 0.5;
 };
