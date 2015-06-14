@@ -52,9 +52,9 @@ var sceneOrder = [
     {num: 10, sceneTime: barCycle * 4},
     {num: 11, sceneTime: barCycle * 4},
     {num: 12, sceneTime: barCycle * 4},
-    {num: 13, sceneTime: barCycle * 8},
-    {num: 15, sceneTime: barCycle * 8},
     {num: 16, sceneTime: barCycle * 8},
+    {num: 15, sceneTime: barCycle * 8},
+    {num: 13, sceneTime: barCycle * 8},
     {num: 17, sceneTime: barCycle * 32},
     {num: 18, sceneTime: barCycle * 8}
 ];
